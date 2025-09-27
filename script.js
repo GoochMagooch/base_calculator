@@ -2,12 +2,12 @@ let base2Input = document.getElementById("base2-input")
 let base2Convert = document.getElementById("base2")
 let testPara = document.getElementById("test-para")
 
+// Convert decimal to base 2
 base2Convert.addEventListener("click", function() {
 	testPara.textContent = ""
 	let myNum = base2Input.value
 	let binary = ""
 
-	// convert decimal to base 2
 	while (myNum > 1) {
 		if (myNum == 2) {
 			binary += 0
@@ -27,6 +27,7 @@ base2Convert.addEventListener("click", function() {
 		myNum = myNum - 1 / 2
 	}
 
+	// Reverse base 2 string for output
 	let ans = ""
 	let counter = binary.length - 1
 	for (let i = 0; i < binary.length; i++) {
@@ -34,6 +35,5 @@ base2Convert.addEventListener("click", function() {
 		counter -= 1
 	}
 	testPara.textContent = base2Input.value + " in binary: " + ans
-
 	base2Input.value = ""
 })
