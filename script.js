@@ -1,50 +1,39 @@
-let base2Input = document.getElementById("base2-input");
-let base2Convert = document.getElementById("base2");
-let testPara = document.getElementById("test-para");
+let base2Input = document.getElementById("base2-input")
+let base2Convert = document.getElementById("base2")
+let testPara = document.getElementById("test-para")
 
 base2Convert.addEventListener("click", function() {
-	testPara.textContent = "";
-	let myNum = base2Input.value;
+	testPara.textContent = ""
+	let myNum = base2Input.value
+	let binary = ""
 
 	// convert decimal to base 2
-	/*
-	let binary = "";
-	let newNum = myNum;
-	while (newNum > 1) {
-		if (newNum % 2 == 1) {
-			binary += 1;
-			newNum = newNum - 1 / 2;
-		} else if (newNum == 2) {
-			binary += 0;
-			return
+	while (myNum > 1) {
+		if (myNum == 2) {
+			binary += 0
+			myNum = myNum / 2
 		} else {
-			binary += 0;
-			newNum = newNum / 2;
+			if (myNum % 2 == 0) {
+				binary += 0
+				myNum = myNum / 2
+			} else {
+				binary += 1
+				myNum = (myNum-1) / 2
+			}
 		}
 	}
-	*/
-	testPara.textContent = base2Input.value + " in binary: " + binary;
-
-	base2Input.value = "";
-})
-// 250 % 2 = 0 - q = 125
-// 125 % 2 = 1 - q =  62
-// 	62 % 2 = 0 - q =  31
-// 	31 % 2 = 1 - q =  15
-// 	15 % 2 = 1 - q =   7
-//   7 % 2 = 1 - q =   3
-//   2 % 2 = 0 - q =   0
-
-let binary = "";
-let newNum = 250;
-while (newNum > 1)
-	if (newNum % 2 == 1) {
-		binary += 1;
-		newNum = newNum - 1 / 2;
-	} else if (newNum == 2) {
-		binary += 0;
-	} else {
-		binary += 0;
-		newNum = newNum / 2;
+	if (myNum == 1) {
+		binary += 1
+		myNum = myNum - 1 / 2
 	}
-console.log(binary)
+
+	let ans = ""
+	let counter = binary.length - 1
+	for (let i = 0; i < binary.length; i++) {
+		ans += binary[counter]
+		counter -= 1
+	}
+	testPara.textContent = base2Input.value + " in binary: " + ans
+
+	base2Input.value = ""
+})
