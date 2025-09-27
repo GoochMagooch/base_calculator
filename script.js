@@ -1,6 +1,6 @@
-let testBtn = document.getElementById("test");
+let base2Convert = document.getElementById("base2");
 let testPara = document.getElementById("test-para");
 
-testBtn.addEventListener("click", function() {
+base2Convert.addEventListener("click", function() {
 	testPara.textContent = "Test complete";
 })
