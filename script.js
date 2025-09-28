@@ -24,15 +24,12 @@ convert.addEventListener("click", function() {
 	}
 	if (myNum == 1) {
 		binary += 1
-		myNum = myNum - 1 / 2
 	}
 
 	// Reverse base 2 string for output
 	let ans = ""
-	let counter = binary.length - 1
-	for (let i = 0; i < binary.length; i++) {
-		ans += binary[counter]
-		counter -= 1
+	for (let i = binary.length-1; i >= 0; i--) {
+		ans += binary[i]
 	}
 	output.textContent = input.value + " in binary: " + ans
 	input.value = ""
