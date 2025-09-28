@@ -122,22 +122,41 @@ convert.addEventListener("click", function() {
 		}
 	}
 
-	// Checks for decimal point and calculates
+	// Calculates number after decimal point
+	let decStr = "reversed"
+
+
+	// Checks for decimal point, reverses strings and outputs accordingly
 	if (decNum > 0) {
-		console.log("decimal point detetected")
-	}
+		// Reverse baseStr and decStr, output with decimal point
+		let ans = ""
+		for (let i = baseStr.length-1; i >= 0; i--) {
+			ans += baseStr[i]
+		}
 
-	// Reverse base string for output
-	let ans = ""
-	for (let i = baseStr.length-1; i >= 0; i--) {
-		ans += baseStr[i]
-	}
+		let decAns = ""
+		for (let i = decStr.length-1; i >= 0; i--) {
+			decAns += decStr[i]
+		}
 
-	// Output depending on base conversion
-	if (dropdown.value == "base-2") {
-		output.textContent = input.value + " in binary: " + ans
+		if (dropdown.value == "base-2") {
+			output.textContent = input.value + " in binary: " + ans + "." + decAns
+		} else {
+			output.textContent = input.value + " in base " + base + ": " + ans + "." + decAns
+		}
 	} else {
-		output.textContent = input.value + " in base " + base + ": " + ans
+		// Reverse baseStr for output (no decimal point)
+		let ans = ""
+		for (let i = baseStr.length-1; i >= 0; i--) {
+			ans += baseStr[i]
+		}
+
+		if (dropdown.value == "base-2") {
+			output.textContent = input.value + " in binary: " + ans
+		} else {
+			output.textContent = input.value + " in base " + base + ": " + ans
+		}
 	}
 	input.value = ""
+	
 })
