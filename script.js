@@ -1,11 +1,11 @@
-let base2Input = document.getElementById("base2-input")
-let base2Convert = document.getElementById("base2")
-let testPara = document.getElementById("test-para")
+let input = document.getElementById("num-input")
+let convert = document.getElementById("convert")
+let output = document.getElementById("conversion-output")
 
 // Convert decimal to base 2
-base2Convert.addEventListener("click", function() {
-	testPara.textContent = ""
-	let myNum = base2Input.value
+convert.addEventListener("click", function() {
+	output.textContent = ""
+	let myNum = input.value
 	let binary = ""
 
 	while (myNum > 1) {
@@ -34,6 +34,8 @@ base2Convert.addEventListener("click", function() {
 		ans += binary[counter]
 		counter -= 1
 	}
-	testPara.textContent = base2Input.value + " in binary: " + ans
-	base2Input.value = ""
+	output.textContent = input.value + " in binary: " + ans
+	input.value = ""
 })
+
+// Convert decimal to base 3
