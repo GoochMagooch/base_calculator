@@ -29,9 +29,8 @@ convert.addEventListener("click", function() {
 	// Reverse base 2 string for output
 	let ans = ""
 	for (let i = binary.length-1; i >= 0; i--) {
-		ans += binary[i]
+		output.textContent = input.value + " in binary: " + (and += binary[i])
 	}
-	output.textContent = input.value + " in binary: " + ans
 	input.value = ""
 })
 
