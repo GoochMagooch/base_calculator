@@ -61,10 +61,57 @@ convert.addEventListener("click", function() {
 		}
 	} else {
 		// Convert decimal to chosen base from base 11 - base 16
-		
+		while (myNum > base-1) {
+			if (myNum == base) {
+				baseStr += 0
+				myNum = myNum / base
+			} else {
+				if (myNum % base == 0) {
+					baseStr += 0
+					myNum = myNum / base
+				} else if (myNum % base == 10) {
+					baseStr += "A"
+					myNum = (myNum-myNum%base) / base
+				} else if (myNum % base == 11) {
+					baseStr += "B"
+					myNum = (myNum-myNum%base) / base
+				} else if (myNum % base == 12) {
+					baseStr += "C"
+					myNum = (myNum-myNum%base) / base
+				} else if (myNum % base == 13) {
+					baseStr += "D"
+					myNum = (myNum-myNum%base) / base
+				} else if (myNum % base == 14) {
+					baseStr += "E"
+					myNum = (myNum-myNum%base) / base
+				} else if (myNum % base == 15) {
+					baseStr += "F"
+					myNum = (myNum-myNum%base) / base
+				} else {
+					baseStr += myNum % base
+					myNum = (myNum-myNum%base) / base
+				}
+			}
+		}
 	}
+	
+	// Append final non-zero remainder to base string
 	if (myNum < base) {
-		baseStr += myNum
+		if (myNum == 10) {
+			baseStr += "A"
+		} else if (myNum == 11) {
+			baseStr += "B"
+		} else if (myNum == 12) {
+			baseStr += "C"
+		} else if (myNum == 13) {
+			baseStr += "D"
+		} else if (myNum == 14) {
+			baseStr += "E"
+		} else if (myNum == 15) {
+			baseStr += "F"
+		} else {
+			baseStr += myNum
+		}
 	}
 
 	// Reverse base string for output
