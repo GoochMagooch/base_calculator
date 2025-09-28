@@ -27,22 +27,41 @@ convert.addEventListener("click", function() {
 		base = 8
 	} else if (dropdown.value == "base-9") {
 		base = 9
-	} 
+	} else if (dropdown.value == "base-10") {
+		base = 10
+	} else if (dropdown.value == "base-11") {
+		base = 11
+	} else if (dropdown.value == "base-12") {
+		base = 12
+	} else if (dropdown.value == "base-13") {
+		base = 13
+	} else if (dropdown.value == "base-14") {
+		base = 14
+	} else if (dropdown.value == "base-15") {
+		base = 15
+	} else if (dropdown.value == "base-16") {
+		base = 16
+	}
 
-	// Convert decimal to chosen base form
-	while (myNum > base-1) {
-		if (myNum == base) {
-			baseStr += 0
-			myNum = myNum / base
-		} else {
-			if (myNum % base == 0) {
+	// Convert decimal to chosen base from base 2 - base 10
+	if (base < 11) {
+		while (myNum > base-1) {
+			if (myNum == base) {
 				baseStr += 0
 				myNum = myNum / base
 			} else {
-				baseStr += myNum % base
-				myNum = (myNum-myNum%base) / base
+				if (myNum % base == 0) {
+					baseStr += 0
+					myNum = myNum / base
+				} else {
+					baseStr += myNum % base
+					myNum = (myNum-myNum%base) / base
+				}
 			}
 		}
+	} else {
+		// Convert decimal to chosen base from base 11 - base 16
+		
 	}
 	if (myNum < base) {
 		baseStr += myNum
@@ -62,5 +81,3 @@ convert.addEventListener("click", function() {
 	}
 	input.value = ""
 })
-
-// Convert decimal to base 3
