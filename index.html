@@ -11,10 +11,18 @@
 <body>
 
     <section id="main-section">
-        <input type="text" id="num-input">
-        <button id="convert">Convert</button>
-        <p id="conversion-output"></p>
+        <div id="io-div">
+            <input type="text" id="num-input">
+            <select id="choices">
+                <option value="" disabled selected>Select Base</option>
+                <option value="base-2">Base 2</option>
+                <option value="base-3">Base 3</option>
+                <option value="base-4">Base 4</option>
+            </select>
+            <button id="convert">Convert</button>
+            <p id="conversion-output"></p>
+        </div>
     </section>
-    
+
 </body>
 </html>
