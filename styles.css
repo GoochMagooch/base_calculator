@@ -6,6 +6,9 @@ body {
 }
 
 #main-section {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	border: 4px solid white;
 	border-radius: 7px;
 	width: 500px;
