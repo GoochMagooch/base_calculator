@@ -6,9 +6,16 @@ let dropdown = document.getElementById("choices")
 // Convert decimal to base 2
 convert.addEventListener("click", function() {
 	output.textContent = ""
-	let myNum = input.value
+	let myNum = 0
 	let baseStr = ""
 	let base = 0
+	let decNum = 0
+
+	// Checks for decimal point
+	if ('.' in input.value) {
+		decNum = input.value['.':]
+		myNum = input.value[0:'.']
+	}
 
 	// Choose base conversion
 	if (dropdown.value == "base-2") {
@@ -112,6 +119,11 @@ convert.addEventListener("click", function() {
 		} else {
 			baseStr += myNum
 		}
+	}
+
+	// Checks for decimal point and calculates
+	if (decNum > 0) {
+		console.log("decimal point detetected")
 	}
 
 	// Reverse base string for output
