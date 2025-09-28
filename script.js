@@ -6,15 +6,16 @@ let dropdown = document.getElementById("choices")
 // Convert decimal to base 2
 convert.addEventListener("click", function() {
 	output.textContent = ""
+	let inputStr = String(input.value)
 	let myNum = 0
 	let baseStr = ""
 	let base = 0
 	let decNum = 0
 
 	// Checks for decimal point
-	if ('.' in input.value) {
-		decNum = input.value['.':]
-		myNum = input.value[0:'.']
+	if (inputStr.includes('.')) {
+		myNum = Number(inputStr.slice(0, inputStr.indexOf('.')))
+		decNum = Number(inputStr.slice(inputStr.indexOf('.')+1))
 	}
 
 	// Choose base conversion
