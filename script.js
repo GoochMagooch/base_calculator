@@ -16,41 +16,8 @@ convert.addEventListener("click", function() {
 	}
 	console.log(inputStr)
 	let baseStr = ""
-	let base = 0
+	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
 	let decStr = ""
-
-	// Choose base conversion
-	if (dropdown.value == "base-2") {
-		base = 2
-	} else if (dropdown.value == "base-3") {
-		base = 3
-	} else if (dropdown.value == "base-4") {
-		base = 4
-	} else if (dropdown.value == "base-5") {
-		base = 5
-	} else if (dropdown.value == "base-6") {
-		base = 6
-	} else if (dropdown.value == "base-7") {
-		base = 7
-	} else if (dropdown.value == "base-8") {
-		base = 8
-	} else if (dropdown.value == "base-9") {
-		base = 9
-	} else if (dropdown.value == "base-10") {
-		base = 10
-	} else if (dropdown.value == "base-11") {
-		base = 11
-	} else if (dropdown.value == "base-12") {
-		base = 12
-	} else if (dropdown.value == "base-13") {
-		base = 13
-	} else if (dropdown.value == "base-14") {
-		base = 14
-	} else if (dropdown.value == "base-15") {
-		base = 15
-	} else if (dropdown.value == "base-16") {
-		base = 16
-	}
 
 	// Convert decimal to chosen base from base 2 - base 10
 	if (base < 11) {
