@@ -7,8 +7,14 @@ let dropdown = document.getElementById("choices")
 convert.addEventListener("click", function() {
 	output.textContent = ""
 	let inputStr = String(input.value)
-	let numStr = inputStr.substring(0, inputStr.indexOf('.'))
-	let myNum = Number(numStr)
+	let myNum = input.value
+	if (inputStr.includes('.')) {
+		let numStr = inputStr.substring(0, inputStr.indexOf('.'))
+		console.log(numStr)
+		myNum = Number(numStr)
+		console.log(myNum)
+	}
+	console.log(inputStr)
 	let baseStr = ""
 	let base = 0
 	let decStr = ""
@@ -99,27 +105,27 @@ convert.addEventListener("click", function() {
 	}
 
 	// Checks for decimal point
-	if (String(input.value).includes('.')) {
-		let decNum = Number(String(input.value).substring(String(input.value).indexOf('.')))
+	if (inputStr.includes('.')) {
+		let decNum = Number(inputStr.substring(inputStr.indexOf('.')))
 		console.log("decNum: " + decNum)
 		console.log("decNum * base: " + decNum * base)
-
-		wholeNum = String(decNum * base).substring(0, String(decNum).indexOf('.'))
-		console.log(Number(wholeNum))
 
 		// Calculates number after decimal point
 		for (let i = 0; i < 6; i++) {
 			decNum = decNum * base
 			if (!String(decNum).includes('.')) {
-				console.log("test")
 				decStr += decNum
 				break
 			} else {
-				wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
+				// NEEDS FIXING - 250.5 in base 9 shoud be 307.444444 not 307.04040404044
+				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
+				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
                 if (Number(wholeNum) > 0) {
                     decStr += wholeNum
+					decNum = Number(decimal) * base
                 } else {
                     decStr += 0
+					decNum = Number(decimal) * base
                 }
 			}
 		}
