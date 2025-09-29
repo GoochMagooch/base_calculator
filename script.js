@@ -118,6 +118,8 @@ convert.addEventListener("click", function() {
 				break
 			} else {
 				// NEEDS FIXING - 250.5 in base 9 shoud be 307.444444 not 307.04040404044
+				// also eventually make sure base11 - base16 are appending
+				// appropriate digit symbols for decimals (lol)
 				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
 				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
                 if (Number(wholeNum) > 0) {
