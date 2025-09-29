@@ -6,17 +6,10 @@ let dropdown = document.getElementById("choices")
 // Convert decimal to base 2
 convert.addEventListener("click", function() {
 	output.textContent = ""
-	let inputStr = String(input.value)
-	let myNum = 0
+	let myNum = input.value
 	let baseStr = ""
 	let base = 0
-	let decNum = 0
-
-	// Checks for decimal point
-	if (inputStr.includes('.')) {
-		myNum = Number(inputStr.slice(0, inputStr.indexOf('.')))
-		decNum = Number(inputStr.slice(inputStr.indexOf('.')+1))
-	}
+	let decStr = ""
 
 	// Choose base conversion
 	if (dropdown.value == "base-2") {
@@ -102,7 +95,35 @@ convert.addEventListener("click", function() {
 			}
 		}
 	}
-	
+
+	// Checks for decimal point
+	if (String(input.value).includes('.')) {
+		let decNum = Number(String(input.value).substring(String(input.value).indexOf('.')))
+		console.log("decNum: " + decNum)
+		console.log("decNum * base: " + decNum * base)
+
+		wholeNum = String(decNum * base).substring(0, String(decNum).indexOf('.'))
+		console.log(wholeNum)
+
+		// Calculates number after decimal point
+		for (let i = 0; i < 6; i++) {
+			decNum = decNum * base
+			if (!String(decNum).includes('.')) {
+				console.log("test")
+				decStr += decNum
+				return
+			} else {
+				wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
+                if (Number(wholeNum) > 0) {
+                    decStr += wholeNum
+                } else {
+                    decStr += 0
+                }
+			}
+		}
+	}
+	console.log(decStr)
+
 	// Append final non-zero remainder to base string
 	if (myNum < base) {
 		if (myNum == 10) {
@@ -122,12 +143,8 @@ convert.addEventListener("click", function() {
 		}
 	}
 
-	// Calculates number after decimal point
-	let decStr = "reversed"
-
-
 	// Checks for decimal point, reverses strings and outputs accordingly
-	if (decNum > 0) {
+	if (String(input.value).includes('.')) {
 		// Reverse baseStr and decStr, output with decimal point
 		let ans = ""
 		for (let i = baseStr.length-1; i >= 0; i--) {
