@@ -77,8 +77,6 @@ convert.addEventListener("click", function() {
 	// Checks for decimal point
 	if (inputStr.includes('.')) {
 		let decNum = Number(inputStr.substring(inputStr.indexOf('.'))) * base
-		console.log("decNum: " + decNum)
-		console.log("decNum * base: " + decNum * base)
 
 		// Calculates number after decimal point
 		for (let i = 0; i < 6; i++) {
@@ -100,7 +98,6 @@ convert.addEventListener("click", function() {
 			}
 		}
 	}
-	console.log(decStr)
 
 	// Append final non-zero remainder to base string
 	if (myNum < base) {
