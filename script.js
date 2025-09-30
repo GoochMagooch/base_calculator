@@ -10,11 +10,8 @@ convert.addEventListener("click", function() {
 	let myNum = input.value
 	if (inputStr.includes('.')) {
 		let numStr = inputStr.substring(0, inputStr.indexOf('.'))
-		console.log(numStr)
 		myNum = Number(numStr)
-		console.log(myNum)
 	}
-	console.log(inputStr)
 	let baseStr = ""
 	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
 	let decStr = ""
@@ -45,6 +42,12 @@ convert.addEventListener("click", function() {
 				if (myNum % base == 0) {
 					baseStr += 0
 					myNum = myNum / base
+				/*
+				else {
+					dictionary{A: 10, B: 11, etc}
+					match value of myNum%base to key
+				}
+				*/
 				} else if (myNum % base == 10) {
 					baseStr += "A"
 					myNum = (myNum-myNum%base) / base
@@ -73,18 +76,16 @@ convert.addEventListener("click", function() {
 
 	// Checks for decimal point
 	if (inputStr.includes('.')) {
-		let decNum = Number(inputStr.substring(inputStr.indexOf('.')))
+		let decNum = Number(inputStr.substring(inputStr.indexOf('.'))) * base
 		console.log("decNum: " + decNum)
 		console.log("decNum * base: " + decNum * base)
 
 		// Calculates number after decimal point
 		for (let i = 0; i < 6; i++) {
-			decNum = decNum * base
 			if (!String(decNum).includes('.')) {
 				decStr += decNum
 				break
 			} else {
-				// NEEDS FIXING - 250.5 in base 9 shoud be 307.444444 not 307.04040404044
 				// also eventually make sure base11 - base16 are appending
 				// appropriate digit symbols for decimals (lol)
 				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
@@ -122,21 +123,16 @@ convert.addEventListener("click", function() {
 
 	// Checks for decimal point, reverses strings and outputs accordingly
 	if (String(input.value).includes('.')) {
-		// Reverse baseStr and decStr, output with decimal point
+		// Reverse baseStr for output (decimal point)
 		let ans = ""
 		for (let i = baseStr.length-1; i >= 0; i--) {
 			ans += baseStr[i]
 		}
 
-		let decAns = ""
-		for (let i = decStr.length-1; i >= 0; i--) {
-			decAns += decStr[i]
-		}
-
 		if (dropdown.value == "base-2") {
-			output.textContent = input.value + " in binary: " + ans + "." + decAns
+			output.textContent = input.value + " in binary: " + ans + "." + decStr
 		} else {
-			output.textContent = input.value + " in base " + base + ": " + ans + "." + decAns
+			output.textContent = input.value + " in base " + base + ": " + ans + "." + decStr
 		}
 	} else {
 		// Reverse baseStr for output (no decimal point)
