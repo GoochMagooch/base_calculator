@@ -15,6 +15,7 @@ convert.addEventListener("click", function() {
 	let baseStr = ""
 	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
 	let decStr = ""
+	let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
 	// Convert user input to chosen base from base 2 - base 10
 	if (base < 11) {
@@ -42,29 +43,8 @@ convert.addEventListener("click", function() {
 				if (myNum % base == 0) {
 					baseStr += 0
 					myNum = myNum / base
-				/*
-				else {
-					dictionary{A: 10, B: 11, etc}
-					match value of myNum%base to key
-				}
-				*/
-				} else if (myNum % base == 10) {
-					baseStr += "A"
-					myNum = (myNum-myNum%base) / base
-				} else if (myNum % base == 11) {
-					baseStr += "B"
-					myNum = (myNum-myNum%base) / base
-				} else if (myNum % base == 12) {
-					baseStr += "C"
-					myNum = (myNum-myNum%base) / base
-				} else if (myNum % base == 13) {
-					baseStr += "D"
-					myNum = (myNum-myNum%base) / base
-				} else if (myNum % base == 14) {
-					baseStr += "E"
-					myNum = (myNum-myNum%base) / base
-				} else if (myNum % base == 15) {
-					baseStr += "F"
+				} else if (String(myNum%base) in letterDigits) {
+					baseStr += letterDigits[String(myNum%base)]
 					myNum = (myNum-myNum%base) / base
 				} else {
 					baseStr += myNum % base
