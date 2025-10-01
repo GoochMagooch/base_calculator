@@ -76,7 +76,10 @@ convert.addEventListener("click", function() {
 				// appropriate digit symbols for decimals (lol)
 				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
 				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
-                if (Number(wholeNum) > 0) {
+                if (Number(wholeNum) > 9) {
+					decStr += letterDigits[String(wholeNum)]
+					decNum = (Number(decimal) * base).toFixed(decNumLength)
+				} else if (Number(wholeNum) > 0) {
                     decStr += wholeNum
 					decNum = (Number(decimal) * base).toFixed(decNumLength)
                 } else {
