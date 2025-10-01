@@ -54,6 +54,13 @@ convert.addEventListener("click", function() {
 		}
 	}
 
+	// Append final non-zero remainder to base string
+	if (String(myNum) in letterDigits) {
+		baseStr += letterDigits[String(myNum)]
+	} else {
+		baseStr += myNum
+	}
+
 	// Checks for decimal point
 	if (inputStr.includes('.')) {
 		let decNum = Number(inputStr.substring(inputStr.indexOf('.'))) * base
@@ -77,25 +84,6 @@ convert.addEventListener("click", function() {
 					decNum = (Number(decimal) * base).toFixed(decNumLength)
                 }
 			}
-		}
-	}
-
-	// Append final non-zero remainder to base string
-	if (myNum < base) {
-		if (myNum == 10) {
-			baseStr += "A"
-		} else if (myNum == 11) {
-			baseStr += "B"
-		} else if (myNum == 12) {
-			baseStr += "C"
-		} else if (myNum == 13) {
-			baseStr += "D"
-		} else if (myNum == 14) {
-			baseStr += "E"
-		} else if (myNum == 15) {
-			baseStr += "F"
-		} else {
-			baseStr += myNum
 		}
 	}
 
