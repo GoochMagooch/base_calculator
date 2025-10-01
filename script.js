@@ -16,7 +16,7 @@ convert.addEventListener("click", function() {
 	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
 	let decStr = ""
 
-	// Convert decimal to chosen base from base 2 - base 10
+	// Convert user input to chosen base from base 2 - base 10
 	if (base < 11) {
 		while (myNum > base-1) {
 			if (myNum == base) {
@@ -33,7 +33,7 @@ convert.addEventListener("click", function() {
 			}
 		}
 	} else {
-		// Convert decimal to chosen base from base 11 - base 16
+		// Convert user input to chosen base from base 11 - base 16
 		while (myNum > base-1) {
 			if (myNum == base) {
 				baseStr += 0
@@ -77,6 +77,7 @@ convert.addEventListener("click", function() {
 	// Checks for decimal point
 	if (inputStr.includes('.')) {
 		let decNum = Number(inputStr.substring(inputStr.indexOf('.'))) * base
+		let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
 
 		// Calculates number after decimal point
 		for (let i = 0; i < 6; i++) {
@@ -90,10 +91,10 @@ convert.addEventListener("click", function() {
 				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
                 if (Number(wholeNum) > 0) {
                     decStr += wholeNum
-					decNum = Number(decimal) * base
+					decNum = (Number(decimal) * base).toFixed(decNumLength)
                 } else {
                     decStr += 0
-					decNum = Number(decimal) * base
+					decNum = (Number(decimal) * base).toFixed(decNumLength)
                 }
 			}
 		}
@@ -128,6 +129,9 @@ convert.addEventListener("click", function() {
 
 		if (dropdown.value == "base-2") {
 			output.textContent = input.value + " in binary: " + ans + "." + decStr
+		} else if (base == 10) {
+			let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
+			output.textContent = input.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		} else {
 			output.textContent = input.value + " in base " + base + ": " + ans + "." + decStr
 		}
