@@ -72,8 +72,7 @@ convert.addEventListener("click", function() {
 				decStr += decNum
 				break
 			} else {
-				// also eventually make sure base11 - base16 are appending
-				// appropriate digit symbols for decimals (lol)
+				// Appends .quotient * radix
 				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
 				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
                 if (Number(wholeNum) > 9) {
