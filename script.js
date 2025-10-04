@@ -15,7 +15,7 @@ function baseConversion(i, n, b, lD) {
 	}
 
     // Convert user input to chosen base from base 2 - base 10
-	if (b < 11) {
+	if (b >= 1 && b <= 10) {
 		while (n > b-1) {
 			if (n == b) {
 				bS += 0
@@ -30,7 +30,7 @@ function baseConversion(i, n, b, lD) {
 			    }
 		    }
 		}
-	} else {
+	} else if (b >= 11 && b <= 16 ) {
 	    // Convert user input to chosen base from base 11 - base 16
 		while (n > b-1) {
 			if (n == b) {
@@ -49,7 +49,9 @@ function baseConversion(i, n, b, lD) {
 				}
 			}
 		}
-	}
+	} else {
+        return 0
+    }
 
 	// Append final non-zero remainder to base string
 	if (String(n) in lD) {
@@ -102,44 +104,49 @@ convert.addEventListener("click", function() {
 	let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
     let finalConversion = ""
 
-    if (inputStr.includes("u")) {
-        output.textContent = "Please enter a valid base number"
+    if (inputStr.length == 0 || inputStr.match(/[a-zA-Z]/g)) {
+        output.textContent = "Please enter a valid decimal number!"
     } else {
         // i, n, b, bS, dS, lD
         // Returns "baseStr", "decStr" and "decNumLength"
         finalConversion = baseConversion(inputStr, myNum, base, letterDigits)
-        baseStr = finalConversion[0]
-        decStr = finalConversion[1]
-        decNumLength = finalConversion[2]
-        // Checks for decimal point, reverses strings and outputs accordingly
-	    if (String(input.value).includes('.')) {
-		    // Reverse baseStr for output (decimal point)
-		    let ans = ""
-		    for (let i = baseStr.length-1; i >= 0; i--) {
-			    ans += baseStr[i]
-		    }
+        if (finalConversion == 0) {
+            output.textContent = "Please choose a radix!"
+        } else {
+            baseStr = finalConversion[0]
+            decStr = finalConversion[1]
+            decNumLength = finalConversion[2]
+            // Checks for decimal point, reverses strings and outputs accordingly
+	        if (String(input.value).includes('.')) {
+		        // Reverse baseStr for output (decimal point)
+		        let ans = ""
+		        for (let i = baseStr.length-1; i >= 0; i--) {
+			        ans += baseStr[i]
+		        }
 
-		    if (dropdown.value == "base-2") {
-			    output.textContent = input.value + " in binary: " + ans + "." + decStr
-		    } else if (base == 10) {
-			    let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
-			    output.textContent = input.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
-		    } else {
-			    output.textContent = input.value + " in base " + base + ": " + ans + "." + decStr
-		    }
-	    } else {
-		    // Reverse baseStr for output (no decimal point)
-		    let ans = ""
-		    for (let i = baseStr.length-1; i >= 0; i--) {
-			    ans += baseStr[i]
-		    }
+		        if (dropdown.value == "base-2") {
+			        output.textContent = input.value + " in binary: " + ans + "." + decStr
+		        } else if (base == 10) {
+			        let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
+			        output.textContent = input.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+		        } else {
+			        output.textContent = input.value + " in base " + base + ": " + ans + "." + decStr
+		        }
+	        } else {
+		        // Reverse baseStr for output (no decimal point)
+		        let ans = ""
+		        for (let i = baseStr.length-1; i >= 0; i--) {
+			        ans += baseStr[i]
+		        }
 
-		    if (dropdown.value == "base-2") {
-			    output.textContent = input.value + " in binary: " + ans
-		    } else {
-			    output.textContent = input.value + " in base " + base + ": " + ans
-		    }
-	    }
+		        if (dropdown.value == "base-2") {
+			        output.textContent = input.value + " in binary: " + ans
+		        } else {
+			        output.textContent = input.value + " in base " + base + ": " + ans
+		        }
+	        }
+
+        }
     }
 	input.value = ""
 	
