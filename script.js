@@ -93,7 +93,7 @@ function baseConversion(i, n, b, lD) {
     return returnedValues
 }
 
-// CHECK USER INPUT, OUTPUT ACCORDINGLY
+// CHECK USER INPUT, OUTPUT ACCORDINGLY (BASE CONVERSION)
 convert.addEventListener("click", function() {
 	output.textContent = ""
 	
@@ -151,3 +151,12 @@ convert.addEventListener("click", function() {
 	input.value = ""
 	
 })
+
+// FUNCTION TO MULTIPLY, ADD, SUBTRACT OR DIVIDE ANY MIX OF BASE NUMBERS
+
+// BUTTON CLICK TO CALCULATE
+/*
+calculate.addEventListener("click", function() {
+    // CODE GOES HERE
+})
+*/
