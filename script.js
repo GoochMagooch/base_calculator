@@ -3,6 +3,8 @@ let convert = document.getElementById("convert")
 let output = document.getElementById("conversion-output")
 let dropdown = document.getElementById("choices")
 
+// comment to test ssh key validation
+
 // CONVERT USER INPUT TO CHOSEN RADIX, RETURNS "baseStr", "decStr" and "decNumLength"
 function baseConversion(i, n, b, lD) {
     let returnedValues = []
