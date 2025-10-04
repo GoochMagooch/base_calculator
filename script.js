@@ -3,9 +3,11 @@ let convert = document.getElementById("convert")
 let output = document.getElementById("conversion-output")
 let dropdown = document.getElementById("choices")
 
-// Returns "baseStr", "decStr" and "decNumLength"
-function baseConversion(i, n, b, bS, dS, lD) {
+// CONVERT USER INPUT TO CHOSEN RADIX, RETURNS "baseStr", "decStr" and "decNumLength"
+function baseConversion(i, n, b, lD) {
     let returnedValues = []
+    let bS = ""
+    let dS = ""
 
     if (i.includes('.')) {
 		let numStr = i.substring(0, i.indexOf('.'))
@@ -55,7 +57,7 @@ function baseConversion(i, n, b, bS, dS, lD) {
 	} else {
 		bS += n
 	}
-    returnedValues.push(Number(bS))
+    returnedValues.push(bS)
 
 	// Checks for decimal point
 	if (i.includes('.')) {
@@ -83,29 +85,32 @@ function baseConversion(i, n, b, bS, dS, lD) {
                 }
 			}
 		}
-        returnedValues.push(Number(dS))
+        returnedValues.push(dS)
         returnedValues.push(Number(dNL))
 	}
     return returnedValues
 }
 
-// Convert decimal to base 2
+// CHECK USER INPUT, OUTPUT ACCORDINGLY
 convert.addEventListener("click", function() {
 	output.textContent = ""
 	
     // Variables for baseConversion()
     let inputStr = String(input.value)
 	let myNum = input.value
-	let baseStr = ""
 	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
-	let decStr = ""
 	let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+    let finalConversion = ""
 
     if (inputStr.includes("u")) {
         output.textContent = "Please enter a valid base number"
     } else {
         // i, n, b, bS, dS, lD
-        baseConversion(inputStr, myNum, base, baseStr, decStr, letterDigits)
+        // Returns "baseStr", "decStr" and "decNumLength"
+        finalConversion = baseConversion(inputStr, myNum, base, letterDigits)
+        baseStr = finalConversion[0]
+        decStr = finalConversion[1]
+        decNumLength = finalConversion[2]
         // Checks for decimal point, reverses strings and outputs accordingly
 	    if (String(input.value).includes('.')) {
 		    // Reverse baseStr for output (decimal point)
@@ -136,7 +141,6 @@ convert.addEventListener("click", function() {
 		    }
 	    }
     }
-	    console.log(baseConversion(inputStr, myNum, base, baseStr, decStr, letterDigits))
-		input.value = ""
+	input.value = ""
 	
 })
