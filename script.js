@@ -4,9 +4,12 @@ let convert = document.getElementById("convert")
 let conOutput = document.getElementById("con-output")
 let dropdown = document.getElementById("choices")
 
+// BASE NUMBER CALCULATOR VARIABLES
 let calcInput = document.getElementById("calc-input")
 let calculate = document.getElementById("calculate")
 let calcOutput = document.getElementById("calc-output")
+let calcDrop = document.getElementById("calcChoices")
+let add = document.getElementById("add")
 
 // OBJECT OF LETTER DIGITS
 let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
@@ -156,11 +159,88 @@ convert.addEventListener("click", function() {
 })
 
 // MULTIPLY, ADD, SUBTRACT OR DIVIDE ANY MIX OF BASE NUMBERS
-function calculateBases() {
-    return
+function calculateBases(n1, n2, o) {
+    let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
+    let num1Arr = []
+    let num2Arr = []
+    let iterations = 0
+
+    if (o == "+"  && radix == 5) {
+        for (let i = num1.length-1; i >= 0; i--) {
+            num1Arr.push(Number(num1[i]))
+        }
+        for (let i = num2.length-1; i >= 0; i--) {
+            num2Arr.push(Number(num2[i]))
+        }
+    }
+
+    // set iterator
+    if (num1Arr.length > num2Arr.length) {
+        iterations = num1Arr.length
+        for (let i = 0; i < (num1Arr.length-num2Arr.length); i++) {
+            num2Arr.push(0)
+        }
+    } else if (num2Arr.length > num1Arr.length) {
+        iterations = num2Arr.length
+        for (let i = 0; i < (num2Arr.length-num1Arr.length); i++) {
+            num1Arr.push(0)
+        }
+    } else {
+        iterations = num1Arr.length
+    }
+    console.log(num1Arr)
+    console.log(num2Arr)
+
+    let temp = ""
+    let remainder = false
+    // calculates expression
+    for (let i = 0; i < iterations; i++) {
+        if (remainder == true) {
+            if (num1Arr[i] + num2Arr[i] + 1 >= radix) {
+                temp += num1Arr[i] + num2Arr[i] + 1 - radix
+            } else {
+                temp += num1Arr[i] + num2Arr[i] + 1
+                remainder = false
+            }
+        } else {
+            if (num1Arr[i] + num2Arr[i] >= radix) {
+                remainder = true
+                temp += num1Arr[i] + num2Arr[i] - radix
+            } else {
+                temp += num1Arr[i] + num2Arr[i]
+            }
+        }
+    }
+    
+    let ans = ""
+    for (let i = temp.length-1; i >= 0; i--) {
+        ans += temp[i]
+    }
+
+    return Number(ans)
 }
+
+let num1 = ""
+let op = ""
+let num2 = ""
+
+add.addEventListener("click", function() {
+    op = "+"
+    num1 = calcInput.value
+    calcInput.value = ""
+})
 
 // BUTTON CLICK TO CALCULATE
 calculate.addEventListener("click", function() {
-    calcOutput.textContent = "Test complete!"
+    calcOutput.textContent = ""
+    num2 = calcInput.value
+    if (calcDrop.value == "") {
+        num1 = ""
+        num2 = ""
+        calcInput.value = ""
+        calcOutput.textContent = "Please choose a base!"
+    } else {
+        calcOutput.textContent = calculateBases(num1, num2, op)
+        calcInput.value = ""
+    }
 })
