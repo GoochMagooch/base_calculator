@@ -11,8 +11,6 @@ let calcOutput = document.getElementById("calc-output")
 // OBJECT OF LETTER DIGITS
 let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
-// comment to test ssh key validation
-
 // CONVERT USER INPUT TO CHOSEN RADIX, RETURNS "baseStr", "decStr" and "decNumLength"
 function baseConversion(i, n, b, lD) {
     let returnedValues = []
