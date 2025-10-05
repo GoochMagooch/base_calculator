@@ -164,12 +164,19 @@ function calculateBases(n1, n2, o) {
     let num1Arr = []
     let num2Arr = []
     let iterations = 0
+    console.log("num1.length: " + num1.length)
 
-    if (o == "+"  && radix == 5) {
+    if (o == "+") {
         for (let i = num1.length-1; i >= 0; i--) {
+            if (Number(num1[i]) > radix - 1) {
+                return Number(num1[i])
+            }
             num1Arr.push(Number(num1[i]))
         }
         for (let i = num2.length-1; i >= 0; i--) {
+            if (Number(num2[i]) > radix-1) {
+                return Number(num2[i])
+            }
             num2Arr.push(Number(num2[i]))
         }
     }
@@ -232,15 +239,22 @@ add.addEventListener("click", function() {
 
 // BUTTON CLICK TO CALCULATE
 calculate.addEventListener("click", function() {
-    calcOutput.textContent = ""
     num2 = calcInput.value
+    let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
+    let ans = calculateBases(num1, num2, op)
+    calcOutput.textContent = ""
     if (calcDrop.value == "") {
         num1 = ""
         num2 = ""
         calcInput.value = ""
         calcOutput.textContent = "Please choose a base!"
     } else {
-        calcOutput.textContent = calculateBases(num1, num2, op)
-        calcInput.value = ""
+        if (String(ans).length == 1 && ans >= radix) {
+            calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
+            calcOutput.value = ""
+        } else {
+            calcOutput.textContent = calculateBases(num1, num2, op)
+            calcInput.value = ""
+        }
     }
 })
