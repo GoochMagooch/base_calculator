@@ -1,7 +1,15 @@
-let input = document.getElementById("num-input")
+// BASE CONVERSION VARIABLES
+let conInput = document.getElementById("con-input")
 let convert = document.getElementById("convert")
-let output = document.getElementById("conversion-output")
+let conOutput = document.getElementById("con-output")
 let dropdown = document.getElementById("choices")
+
+let calcInput = document.getElementById("calc-input")
+let calculate = document.getElementById("calculate")
+let calcOutput = document.getElementById("calc-output")
+
+// OBJECT OF LETTER DIGITS
+let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
 // comment to test ssh key validation
 
@@ -97,42 +105,40 @@ function baseConversion(i, n, b, lD) {
 
 // CHECK USER INPUT, OUTPUT ACCORDINGLY (BASE CONVERSION)
 convert.addEventListener("click", function() {
-	output.textContent = ""
+	conOutput.textContent = ""
 	
     // Variables for baseConversion()
-    let inputStr = String(input.value)
-	let myNum = input.value
+    let inputStr = String(conInput.value)
+	let myNum = conInput.value
 	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
-	let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-    let finalConversion = ""
+	let finalConversion = ""
 
     if (inputStr.length == 0 || inputStr.match(/[a-zA-Z]/g)) {
-        output.textContent = "Please enter a valid decimal number!"
+        conOutput.textContent = "Please enter a valid decimal number!"
     } else {
         // i, n, b, bS, dS, lD
         // Returns "baseStr", "decStr" and "decNumLength"
         finalConversion = baseConversion(inputStr, myNum, base, letterDigits)
         if (finalConversion == 0) {
-            output.textContent = "Please choose a radix!"
+            conOutput.textContent = "Please choose a radix!"
         } else {
             baseStr = finalConversion[0]
             decStr = finalConversion[1]
             decNumLength = finalConversion[2]
             // Checks for decimal point, reverses strings and outputs accordingly
-	        if (String(input.value).includes('.')) {
+	        if (String(conInput.value).includes('.')) {
 		        // Reverse baseStr for output (decimal point)
 		        let ans = ""
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
-
 		        if (dropdown.value == "base-2") {
-			        output.textContent = input.value + " in binary: " + ans + "." + decStr
+			        conOutput.textContent = conInput.value + " in binary: " + ans + "." + decStr
 		        } else if (base == 10) {
 			        let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
-			        output.textContent = input.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+			        conOutput.textContent = conInput.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		        } else {
-			        output.textContent = input.value + " in base " + base + ": " + ans + "." + decStr
+			        conOutput.textContent = conInput.value + " in base " + base + ": " + ans + "." + decStr
 		        }
 	        } else {
 		        // Reverse baseStr for output (no decimal point)
@@ -140,25 +146,23 @@ convert.addEventListener("click", function() {
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
-
 		        if (dropdown.value == "base-2") {
-			        output.textContent = input.value + " in binary: " + ans
+			        conOutput.textContent = conInput.value + " in binary: " + ans
 		        } else {
-			        output.textContent = input.value + " in base " + base + ": " + ans
+			        conOutput.textContent = conInput.value + " in base " + base + ": " + ans
 		        }
 	        }
-
         }
     }
-	input.value = ""
-	
+	conInput.value = ""
 })
 
-// FUNCTION TO MULTIPLY, ADD, SUBTRACT OR DIVIDE ANY MIX OF BASE NUMBERS
+// MULTIPLY, ADD, SUBTRACT OR DIVIDE ANY MIX OF BASE NUMBERS
+function calculateBases() {
+    return
+}
 
 // BUTTON CLICK TO CALCULATE
-/*
 calculate.addEventListener("click", function() {
-    // CODE GOES HERE
+    calcOutput.textContent = "Test complete!"
 })
-*/
