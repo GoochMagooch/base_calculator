@@ -12,10 +12,10 @@ let calcDrop = document.getElementById("calcChoices")
 let add = document.getElementById("add")
 
 // OBJECT OF LETTER DIGITS
-let letterDigits = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
 // CONVERT USER INPUT TO CHOSEN RADIX, RETURNS "baseStr", "decStr" and "decNumLength"
-function baseConversion(i, n, b, lD) {
+function baseConversion(i, n, b, dL) {
     let returnedValues = []
     let bS = ""
     let dS = ""
@@ -51,8 +51,8 @@ function baseConversion(i, n, b, lD) {
 				if (n % b == 0) {
 					bS += 0
 					n = n / b
-				} else if (String(n%b) in lD) {
-					bS += lD[String(n%b)]
+				} else if (String(n%b) in dL) {
+					bS += dL[String(n%b)]
 					n = (n-n%b) / b
 				} else {
 					bS += n % b
@@ -66,7 +66,7 @@ function baseConversion(i, n, b, lD) {
 
 	// Append final non-zero remainder to base string
 	if (String(n) in lD) {
-		bS += lD[String(n)]
+		bS += dL[String(n)]
 	} else {
 		bS += n
 	}
@@ -117,9 +117,9 @@ convert.addEventListener("click", function() {
     if (inputStr.length == 0 || inputStr.match(/[a-zA-Z]/g)) {
         conOutput.textContent = "Please enter a valid decimal number!"
     } else {
-        // i, n, b, bS, dS, lD
+        // i, n, b, dL
         // Returns "baseStr", "decStr" and "decNumLength"
-        finalConversion = baseConversion(inputStr, myNum, base, letterDigits)
+        finalConversion = baseConversion(inputStr, myNum, base, digitLetters)
         if (finalConversion == 0) {
             conOutput.textContent = "Please choose a radix!"
         } else {
@@ -158,30 +158,50 @@ convert.addEventListener("click", function() {
 	conInput.value = ""
 })
 
-// MULTIPLY, ADD, SUBTRACT OR DIVIDE ANY MIX OF BASE NUMBERS
+let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
+// ADD, SUBTRACT, MULTIPLY OR DIVIDE ANY MIX OF BASE NUMBERS
 function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
     let iterations = 0
-    console.log("num1.length: " + num1.length)
 
     if (o == "+") {
         for (let i = num1.length-1; i >= 0; i--) {
-            if (Number(num1[i]) > radix - 1) {
-                return Number(num1[i])
+            if (num1[i] in letterDigits) {
+                if (Number(letterDigits[num1[i]]) > radix - 1) {
+                    return  Number(letterDigits[num1[i]])
+                } else {
+                    num1Arr.push(Number(letterDigits[num1[i]]))
+                }
+            } else {
+                if (Number(num1[i]) > radix - 1) {
+                    return Number(num1[i])
+                } else {
+                    num1Arr.push(Number(num1[i]))
+                }
             }
-            num1Arr.push(Number(num1[i]))
         }
         for (let i = num2.length-1; i >= 0; i--) {
-            if (Number(num2[i]) > radix-1) {
-                return Number(num2[i])
+            if (num2[i] in letterDigits) {
+                if (Number(letterDigits[num2[i]]) > radix - 1) {
+                    return Number(letterDigits[num2[i]])
+                } else {
+                    num2Arr.push(Number(letterDigits[num2[i]]))
+                }
+            } else {
+                if (Number(num2[i]) > radix - 1) {
+                    return Number(num2[i])
+                } else {
+                    num2Arr.push(Number(num2[i]))
+                }
             }
-            num2Arr.push(Number(num2[i]))
         }
     }
+    // console.log("num1Arr: " + num1Arr)
+    // console.log("num2Arr: " + num2Arr)
 
-    // set iterator
+    // set iterator and add trailing 0's for calculations
     if (num1Arr.length > num2Arr.length) {
         iterations = num1Arr.length
         for (let i = 0; i < (num1Arr.length-num2Arr.length); i++) {
@@ -195,36 +215,43 @@ function calculateBases(n1, n2, o) {
     } else {
         iterations = num1Arr.length
     }
-    console.log(num1Arr)
-    console.log(num2Arr)
 
-    let temp = ""
+    let temp = []
     let remainder = false
     // calculates expression
     for (let i = 0; i < iterations; i++) {
         if (remainder == true) {
             if (num1Arr[i] + num2Arr[i] + 1 >= radix) {
-                temp += num1Arr[i] + num2Arr[i] + 1 - radix
+                temp.push(num1Arr[i] + num2Arr[i] + 1 - radix)
             } else {
-                temp += num1Arr[i] + num2Arr[i] + 1
+                temp.push(num1Arr[i] + num2Arr[i] + 1)
                 remainder = false
             }
         } else {
             if (num1Arr[i] + num2Arr[i] >= radix) {
                 remainder = true
-                temp += num1Arr[i] + num2Arr[i] - radix
+                temp.push(num1Arr[i] + num2Arr[i] - radix)
             } else {
-                temp += num1Arr[i] + num2Arr[i]
+                temp.push(num1Arr[i] + num2Arr[i])
             }
         }
     }
     
-    let ans = ""
+    let ansObj = []
     for (let i = temp.length-1; i >= 0; i--) {
-        ans += temp[i]
+        ansObj.push(temp[i])
     }
 
-    return Number(ans)
+    let ans = ""
+    for (let i = 0; i < ansObj.length; i++) {
+        if (ansObj[i] in digitLetters) {
+            ans += digitLetters[ansObj[i]]
+        } else {
+            ans += ansObj[i]
+        }
+    }
+
+    return ans
 }
 
 let num1 = ""
@@ -242,6 +269,7 @@ calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let ans = calculateBases(num1, num2, op)
+    console.log("ans: " + ans)
     calcOutput.textContent = ""
     if (calcDrop.value == "") {
         num1 = ""
@@ -249,8 +277,8 @@ calculate.addEventListener("click", function() {
         calcInput.value = ""
         calcOutput.textContent = "Please choose a base!"
     } else {
-        if (String(ans).length == 1 && ans >= radix) {
-            calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
+        if (typeof(ans) === "number" && ans >= radix) {
+            calcOutput.textContent = "test 1" // "Digit symbol '" + ans + "' is invalid in Base " + radix
             calcOutput.value = ""
         } else {
             calcOutput.textContent = calculateBases(num1, num2, op)
