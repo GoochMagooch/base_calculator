@@ -166,6 +166,7 @@ function calculateBases(n1, n2, o) {
     let num2Arr = []
     let iterations = 0
 
+    // FIX: allow uppercase and lowercase inputs of digit symbols
     if (o == "+") {
         for (let i = num1.length-1; i >= 0; i--) {
             if (num1[i] in letterDigits) {
@@ -198,8 +199,6 @@ function calculateBases(n1, n2, o) {
             }
         }
     }
-    // console.log("num1Arr: " + num1Arr)
-    // console.log("num2Arr: " + num2Arr)
 
     // set iterator and add trailing 0's for calculations
     if (num1Arr.length > num2Arr.length) {
@@ -236,7 +235,7 @@ function calculateBases(n1, n2, o) {
             }
         }
     }
-    
+
     let ansObj = []
     for (let i = temp.length-1; i >= 0; i--) {
         ansObj.push(temp[i])
@@ -250,7 +249,6 @@ function calculateBases(n1, n2, o) {
             ans += ansObj[i]
         }
     }
-
     return ans
 }
 
@@ -269,7 +267,6 @@ calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let ans = calculateBases(num1, num2, op)
-    console.log("ans: " + ans)
     calcOutput.textContent = ""
     if (calcDrop.value == "") {
         num1 = ""
@@ -278,7 +275,8 @@ calculate.addEventListener("click", function() {
         calcOutput.textContent = "Please choose a base!"
     } else {
         if (typeof(ans) === "number" && ans >= radix) {
-            calcOutput.textContent = "test 1" // "Digit symbol '" + ans + "' is invalid in Base " + radix
+            // FIX: convert invalid base number to letter digit symbol if necessary
+            calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
             calcOutput.value = ""
         } else {
             calcOutput.textContent = calculateBases(num1, num2, op)
