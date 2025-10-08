@@ -47,6 +47,16 @@ button {
 	border-radius: 3px;
 }
 
+.operators {
+    width: 28px;
+	height: 23px;
+	text-align: center;
+	background-color: black;
+	color: white;
+	border: none;
+	border-radius: 3px;
+}
+
 p {
 	color: white;
 }
