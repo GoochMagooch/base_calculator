@@ -215,48 +215,48 @@ function calculateBases(n1, n2, o) {
         iterations = num1Arr.length
     }
 
-    // FIX: append to beginning of object instead of end of it
-    // doing away with the need for a blcck of code that reverses 'temp'
-    let temp = []
+    let temp = ""
     let remainder = false
     // calculates expression
     for (let i = 0; i < iterations; i++) {
         if (remainder == true) {
-            if (num1Arr[i] + num2Arr[i] + 1 >= radix) {
-                temp.push(num1Arr[i] + num2Arr[i] + 1 - radix)
+            let sumR = num1Arr[i] + num2Arr[i] + 1 // sum with remainder
+            if (sumR >= radix) {
+                if (sumR - radix > 9) {
+                    temp = digitLetters[sumR - radix] + temp
+                } else {
+                    temp = (String(sumR - radix)) + temp
+                }
             } else {
-                temp.push(num1Arr[i] + num2Arr[i] + 1)
+                if (sumR - radix > 9) {
+                    temp = String(sumR) + temp
+                } else {
+                    temp = (digitLetters[sumR]) + temp
+                }
+                temp = String(sumR) + temp
                 remainder = false
             }
         } else {
-            if (num1Arr[i] + num2Arr[i] >= radix) {
+            let sumNR = num1Arr[i] + num2Arr[i] // sum with no remainder
+            if (sumNR >= radix) {
                 remainder = true
-                temp.push(num1Arr[i] + num2Arr[i] - radix)
+                if (sumNR - radix > 9) {
+                    temp = digitLetters[sumNR - radix] + temp
+                } else {
+                    temp = String(sumNR - radix) + temp
+                }
             } else {
-                temp.push(num1Arr[i] + num2Arr[i])
+                temp = String(sumNR - radix) + temp
             }
         }
     }
-    
+
     // pushes trailing '1' if necessary during final sum
     if (remainder == true) {
-        temp.push(1)
+        temp = "1" + temp
     }
 
-    let ansObj = []
-    for (let i = temp.length-1; i >= 0; i--) {
-        ansObj.push(temp[i])
-    }
-
-    let ans = ""
-    for (let i = 0; i < ansObj.length; i++) {
-        if (ansObj[i] in digitLetters) {
-            ans += digitLetters[ansObj[i]]
-        } else {
-            ans += ansObj[i]
-        }
-    }
-    return ans
+    return temp
 }
 
 let num1 = ""
