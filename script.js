@@ -215,6 +215,8 @@ function calculateBases(n1, n2, o) {
         iterations = num1Arr.length
     }
 
+    // FIX: append to beginning of object instead of end of it
+    // doing away with the need for a blcck of code that reverses 'temp'
     let temp = []
     let remainder = false
     // calculates expression
@@ -234,6 +236,11 @@ function calculateBases(n1, n2, o) {
                 temp.push(num1Arr[i] + num2Arr[i])
             }
         }
+    }
+    
+    // pushes trailing '1' if necessary during final sum
+    if (remainder == true) {
+        temp.push(1)
     }
 
     let ansObj = []
