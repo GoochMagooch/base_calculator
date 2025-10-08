@@ -21,7 +21,7 @@ let b2DecDropdown = document.getElementById("b2Dec-choices")
 let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                 DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER
+// ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Convert user input to chose base number, returns "baseStr", "decStr" and "decNumLength"
@@ -169,7 +169,7 @@ d2BaseBtn.addEventListener("click", function() {
 })
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                               BASE NUMBER CALCULATOR
+// ~~~~~~~~~~                    BASE NUMBER CALCULATOR                    ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Object of numbers assigned to letter digit symbols
@@ -323,7 +323,7 @@ calculate.addEventListener("click", function() {
 })
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//                     BASE NUMBER TO DECIMAL (base 10) CONVERTER
+// ~~~~~~~~~~          BASE NUMBER TO DECIMAL (base 10) CONVERTER          ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 b2DecBtn.addEventListener("click", function() {
     b2DecOutput.textContent = "Test complete"
