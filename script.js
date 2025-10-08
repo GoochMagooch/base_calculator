@@ -1,8 +1,8 @@
-// BASE CONVERSION VARIABLES
-let conInput = document.getElementById("con-input")
-let convert = document.getElementById("convert")
-let conOutput = document.getElementById("con-output")
-let dropdown = document.getElementById("choices")
+// DECIMAL NUMBER TO BASE CONVERSION VARIABLES
+let d2BaseInput = document.getElementById("d2Base-input")
+let d2BaseBtn = document.getElementById("d2Base-btn")
+let d2BaseOutput = document.getElementById("d2Base-output")
+let d2BaseDropdown = document.getElementById("d2Base-choices")
 
 // BASE NUMBER CALCULATOR VARIABLES
 let calcInput = document.getElementById("calc-input")
@@ -11,10 +11,20 @@ let calcOutput = document.getElementById("calc-output")
 let calcDrop = document.getElementById("calcChoices")
 let add = document.getElementById("add")
 
+// BASE NUMBER TO DECIMAL CONVERSION VARIABLES
+let b2DecInput = document.getElementById("b2Dec-input")
+let b2DecBtn = document.getElementById("b2Dec-btn")
+let b2DecOutput = document.getElementById("b2Dec-output")
+let b2DecDropdown = document.getElementById("b2Dec-choices")
+
 // OBJECT OF LETTER DIGITS
 let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 
-// CONVERT USER INPUT TO CHOSEN RADIX, RETURNS "baseStr", "decStr" and "decNumLength"
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                 DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Convert user input to chose base number, returns "baseStr", "decStr" and "decNumLength"
 function baseConversion(i, n, b, dL) {
     let returnedValues = []
     let bS = ""
@@ -104,42 +114,42 @@ function baseConversion(i, n, b, dL) {
     return returnedValues
 }
 
-// CHECK USER INPUT, OUTPUT ACCORDINGLY (BASE CONVERSION)
-convert.addEventListener("click", function() {
-	conOutput.textContent = ""
+// Check user input, output accordingly
+d2BaseBtn.addEventListener("click", function() {
+	d2BaseOutput.textContent = ""
 	
     // Variables for baseConversion()
-    let inputStr = String(conInput.value)
-	let myNum = conInput.value
-	let base = Number(String(dropdown.value).substring(String(dropdown.value).indexOf('-')+1))
+    let inputStr = String(d2BaseInput.value)
+	let myNum = d2BaseInput.value
+	let base = Number(String(d2BaseDropdown.value).substring(String(d2BaseDropdown.value).indexOf('-')+1))
 	let finalConversion = ""
 
     if (inputStr.length == 0 || inputStr.match(/[a-zA-Z]/g)) {
-        conOutput.textContent = "Please enter a valid decimal number!"
+        d2BaseOutput.textContent = "Please enter a valid decimal number!"
     } else {
         // i, n, b, dL
         // Returns "baseStr", "decStr" and "decNumLength"
         finalConversion = baseConversion(inputStr, myNum, base, digitLetters)
         if (finalConversion == 0) {
-            conOutput.textContent = "Please choose a radix!"
+            d2BaseOutput.textContent = "Please choose a radix!"
         } else {
             baseStr = finalConversion[0]
             decStr = finalConversion[1]
             decNumLength = finalConversion[2]
             // Checks for decimal point, reverses strings and outputs accordingly
-	        if (String(conInput.value).includes('.')) {
+	        if (String(d2BaseInput.value).includes('.')) {
 		        // Reverse baseStr for output (decimal point)
 		        let ans = ""
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
-		        if (dropdown.value == "base-2") {
-			        conOutput.textContent = conInput.value + " in binary: " + ans + "." + decStr
+		        if (d2BaseDropdown.value == "base-2") {
+			        d2BaseOutput.textContent = d2BaseInput.value + " in binary: " + ans + "." + decStr
 		        } else if (base == 10) {
 			        let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
-			        conOutput.textContent = conInput.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+			        d2BaseOutput.textContent = d2BaseInput.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		        } else {
-			        conOutput.textContent = conInput.value + " in base " + base + ": " + ans + "." + decStr
+			        d2BaseOutput.textContent = d2BaseInput.value + " in base " + base + ": " + ans + "." + decStr
 		        }
 	        } else {
 		        // Reverse baseStr for output (no decimal point)
@@ -147,21 +157,28 @@ convert.addEventListener("click", function() {
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
-		        if (dropdown.value == "base-2") {
-			        conOutput.textContent = conInput.value + " in binary: " + ans
+		        if (d2BaseDropdown.value == "base-2") {
+			        d2BaseOutput.textContent = d2BaseInput.value + " in binary: " + ans
 		        } else {
-			        conOutput.textContent = conInput.value + " in base " + base + ": " + ans
+			        d2BaseOutput.textContent = d2BaseInput.value + " in base " + base + ": " + ans
 		        }
 	        }
         }
     }
-	conInput.value = ""
+	d2BaseInput.value = ""
 })
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                               BASE NUMBER CALCULATOR
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Object of numbers assigned to letter digit symbols
 let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
-// ADD, SUBTRACT, MULTIPLY OR DIVIDE ANY MIX OF BASE NUMBERS
+
+// Add, subtract, multipy or divide base numbers
 function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
+    //FIX: Convert arrays to strings for less mem usage
     let num1Arr = []
     let num2Arr = []
     let iterations = 0
@@ -280,7 +297,7 @@ add.addEventListener("click", function() {
     calcInput.value = ""
 })
 
-// BUTTON CLICK TO CALCULATE
+// Outputs calculated base number
 calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
@@ -303,4 +320,11 @@ calculate.addEventListener("click", function() {
             calcInput.value = ""
         }
     }
+})
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//                     BASE NUMBER TO DECIMAL (base 10) CONVERTER
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+b2DecBtn.addEventListener("click", function() {
+    b2DecOutput.textContent = "Test complete"
 })
