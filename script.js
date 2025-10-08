@@ -167,17 +167,19 @@ function calculateBases(n1, n2, o) {
     let iterations = 0
 
     let invalidDigitSymbol = []
-    // FIX: allow uppercase and lowercase inputs of digit symbols
     if (o == "+") {
         for (let i = num1.length-1; i >= 0; i--) {
-            if (num1[i] in letterDigits) {
-                if (Number(letterDigits[num1[i]]) > radix - 1) {
-                    invalidDigitSymbol.push(digitLetters[letterDigits[num1[i]]])
-                    console.log(typeof(invalidDigitSymbol))
+            let tempStr = num1[i]
+            if (tempStr.toUpperCase() in letterDigits) {
+                if (Number(letterDigits[tempStr.toUpperCase()]) > radix - 1) {
+                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
                     return invalidDigitSymbol
                 } else {
-                    num1Arr.push(Number(letterDigits[num1[i]]))
+                    num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                 }
+            } else if (typeof(num1[i] === "NaN")) {
+                invalidDigitSymbol.push(num1[i])
+                return invalidDigitSymbol
             } else {
                 if (Number(num1[i]) > radix - 1) {
                     return Number(num1[i])
@@ -187,12 +189,17 @@ function calculateBases(n1, n2, o) {
             }
         }
         for (let i = num2.length-1; i >= 0; i--) {
-            if (num2[i] in letterDigits) {
-                if (Number(letterDigits[num2[i]]) > radix - 1) {
-                    return Number(letterDigits[num2[i]])
+            let tempStr = num2[i]
+            if (tempStr.toUpperCase() in letterDigits) {
+                if (Number(letterDigits[tempStr.toUpperCase()]) > radix - 1) {
+                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
+                    return invalidDigitSymbol
                 } else {
-                    num2Arr.push(Number(letterDigits[num2[i]]))
+                    num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                 }
+            } else if (typeof(num2[i] === "NaN")) {
+                invalidDigitSymbol.push(num2[i])
+                return invalidDigitSymbol
             } else {
                 if (Number(num2[i]) > radix - 1) {
                     return Number(num2[i])
@@ -200,6 +207,7 @@ function calculateBases(n1, n2, o) {
                     num2Arr.push(Number(num2[i]))
                 }
             }
+
         }
     }
 
