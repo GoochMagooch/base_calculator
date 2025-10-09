@@ -333,7 +333,6 @@ calculate.addEventListener("click", function() {
 
 // CALCULATE BASE NUMBER CONVERSION TO DECIMAL
 function baseToDecimal(b2DecIn, b) {
-    // FIX: Add functionality to convert base numbers with decimal points
     let input = b2DecIn
     let base = b
     let baseChecker = ""
@@ -342,7 +341,34 @@ function baseToDecimal(b2DecIn, b) {
 
 
     // let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-    // let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
+    // let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
+    let fractionalStr = ""
+    let fractional = 0
+    if (b2DecIn.includes(".")/*&& Number(b2DecIn.substring(b2DecIn.indexOf('.')+1)) > 0*/) {
+        fractionalStr = b2DecIn.substring(b2DecIn.indexOf('.')+1)
+        input = b2DecIn.substring(0, b2DecIn.indexOf('.'))
+        if (fractionalStr == "") {
+            return "Please enter number after decimal point!"
+        } else if (fractionalStr.match(/[a-zA-Z]/g)) {
+            for (let i = 0; i < fractionalStr.length; i++) {
+                if (String(fractionalStr[i]).toUpperCase() in letterDigits) {
+                    if (letterDigits[String(fractionalStr[i]).toUpperCase()] > base-1) {
+                        return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                    } else {
+                        //  FIX:
+                        return "Add code to calculate decimals with letter digits"
+                    }
+                } else {
+                    return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                }
+            }
+        } else {
+            // FIX: 
+            return "Add code to calculate number decimals"
+        }
+    } else {
+        input = b2DecIn
+    }
 
     for (let i = input.length-1; i >= 0; i--) {
         if (String(input[i]).toUpperCase() in letterDigits) {
@@ -362,6 +388,9 @@ function baseToDecimal(b2DecIn, b) {
         } else {
             return "Invalid digit symbol in base " + base + ": " + "'" + input[i] + "'"
         }
+    }
+    if (fractional > 0) {
+        return Number(conversion + fractional)
     }
     return Number(conversion)
 }
