@@ -43,8 +43,6 @@ function baseConversion(uin, uBase, digLet) {
 	}
 
     // 'returned' will eventually store 'baseStr', 'decStr' and 'dNLength' to be returned
-    // FIX: digitLetters values not being reached when calling keys
-    // whole numbers are calculated, decimal portions of decimal numbers are not
     let returned = []
     let baseStr = ""
     let decStr = ""
@@ -89,7 +87,6 @@ function baseConversion(uin, uBase, digLet) {
     }
 
 	// append final non-zero remainder to base number
-    // FIX: allow input of lowercase/uppercase letter digits
 	if (String(quotient) in digLet) {
 		baseStr += digLet[String(quotient)]
 	} else {
