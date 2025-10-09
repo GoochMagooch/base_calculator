@@ -331,5 +331,22 @@ calculate.addEventListener("click", function() {
 // ~~~~~~~~~~          BASE NUMBER TO DECIMAL (base 10) CONVERTER          ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 b2DecBtn.addEventListener("click", function() {
-    b2DecOutput.textContent = "Test complete"
+    let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
+    let input = b2DecInput.value
+    let test = ""
+
+    if (!input) {
+        b2DecOutput.textContent = "Please enter your base number"
+    } else if (!base) {
+        b2DecOutput.textContent = "Please choose a valid base"
+    } else {
+        for (let i = input.length-1; i >= 0; i--) {
+            test += input[i]
+        }
+        b2DecOutput.textContent = test
+        input.value = ""
+    }
+ 
+    // FIX: Check for numbers greater than base in base numbers
+    // FIX: Convert letter digits to check if they're greater than the base
 })
