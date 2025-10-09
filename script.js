@@ -333,7 +333,6 @@ calculate.addEventListener("click", function() {
 
 // CALCULATE BASE NUMBER CONVERSION TO DECIMAL
 function baseToDecimal(b2DecIn, b) {
-    // FIX: Convert letter digits to check if they're greater than the base
     // FIX: Add functionality to convert base numbers with decimal points
     let input = b2DecIn
     let base = b
@@ -341,20 +340,30 @@ function baseToDecimal(b2DecIn, b) {
     let position = 0
     let conversion = 0
 
+
+    // let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+    // let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
+
     for (let i = input.length-1; i >= 0; i--) {
-        if (input[i] > base-1) {
-            baseChecker = input[i]
-            break
+        if (String(input[i]).toUpperCase() in letterDigits) {
+            if (letterDigits[String(input[i]).toUpperCase()] > base-1) {
+                return "Invalid digit symbol in base " + base + ": " + "'" + input[i] + "'"
+            } else {
+                conversion += Number(letterDigits[String(input[i]).toUpperCase()]) * base ** position
+                position += 1
+            }
+        } else if (input[i] >= 0 && input[i] <= 9) {
+            if (input[i] > base-1) {
+                return "Invalid digit symbol in base " + base + ": " + input[i]
+            } else {
+                conversion += input[i] * (base ** position)
+                position += 1
+            }
         } else {
-            conversion += input[i] * (base ** position)
-            position += 1
+            return "Invalid digit symbol in base " + base + ": " + "'" + input[i] + "'"
         }
     }
-    if (!baseChecker) {
-        return Number(conversion)
-    } else {
-        return "Invalid digit symbol in base " + base + ": " + baseChecker
-    }
+    return Number(conversion)
 }
 
 // OUTPUT CONVERTED BASE NUMBER
