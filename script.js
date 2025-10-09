@@ -333,7 +333,9 @@ calculate.addEventListener("click", function() {
 b2DecBtn.addEventListener("click", function() {
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
     let input = b2DecInput.value
-    let test = ""
+    let conversion = 0
+    let position = 0
+    let baseChecker = ""
 
     if (!input) {
         b2DecOutput.textContent = "Please enter your base number"
@@ -341,12 +343,22 @@ b2DecBtn.addEventListener("click", function() {
         b2DecOutput.textContent = "Please choose a valid base"
     } else {
         for (let i = input.length-1; i >= 0; i--) {
-            test += input[i]
+            if (input[i] > base-1) {
+                baseChecker = input[i]
+                break
+            } else {
+                conversion += input[i] * (base ** position)
+                position += 1
+            }
         }
-        b2DecOutput.textContent = test
-        input.value = ""
+        if (!baseChecker) {
+            b2DecOutput.textContent = conversion
+        } else {
+            b2DecOutput.textContent = "Invalid digit symbol in base " + base + ": " + baseChecker
+            input.value = ""
+        }
     }
- 
-    // FIX: Check for numbers greater than base in base numbers
+
     // FIX: Convert letter digits to check if they're greater than the base
+    // FIX: Add functionality to convert base numbers with decimal points
 })
