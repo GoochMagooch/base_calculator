@@ -8,7 +8,7 @@ let d2BaseDropdown = document.getElementById("d2Base-choices")
 let calcInput = document.getElementById("calc-input")
 let calculate = document.getElementById("calculate")
 let calcOutput = document.getElementById("calc-output")
-let calcDrop = document.getElementById("calcChoices")
+let calcDrop = document.getElementById("calc-choices")
 let add = document.getElementById("add")
 
 // BASE NUMBER TO DECIMAL CONVERSION VARIABLES
@@ -17,56 +17,70 @@ let b2DecBtn = document.getElementById("b2Dec-btn")
 let b2DecOutput = document.getElementById("b2Dec-output")
 let b2DecDropdown = document.getElementById("b2Dec-choices")
 
-// OBJECT OF LETTER DIGITS
+// OBJECT OF LETTER DIGIT SYMBOLS ASSIGNED TO NUMBERS
 let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+// OBJECT OF NUMBERS ASSIGNED TO LETTER DIGIT SYMBOLS
+let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Convert user input to chose base number, returns "baseStr", "decStr" and "decNumLength"
-function baseConversion(i, n, b, dL) {
-    let returnedValues = []
-    let bS = ""
-    let dS = ""
+// RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
+function baseConversion(uin, uBase, digLet) {
+    // n = Number(quotient with decimal)
+    // i = quotient (no decimal)
+    // replace any 'i' or 'n' with 'quotient'
 
-    if (i.includes('.')) {
-		let numStr = i.substring(0, i.indexOf('.'))
-		n = Number(numStr)
+    // quotient string
+    let uinStr = String(uin)
+
+    // renamed variables (base and quotient) for readability within baseConversion()
+    let base = uBase
+    let quotient = Number(uinStr)
+    if (uinStr.includes('.')) {
+		quotient = Number(uinStr.substring(0, uinStr.indexOf('.')))
 	}
 
-    // Convert user input to chosen base from base 2 - base 10
-	if (b >= 1 && b <= 10) {
-		while (n > b-1) {
-			if (n == b) {
-				bS += 0
-			    n = n / b
+    // 'returned' will eventually store 'baseStr', 'decStr' and 'dNLength' to be returned
+    // FIX: digitLetters values not being reached when calling keys
+    // whole numbers are calculated, decimal portions of decimal numbers are not
+    let returned = []
+    let baseStr = ""
+    let decStr = ""
+
+    // convert quotient to chosen base from base 2 - base 10
+	if (base >= 1 && base <= 10) {
+		while (quotient > base-1) {
+			if (quotient == base) {
+				baseStr += 0
+			    quotient = quotient / base
 		    } else {
-			    if (n % b == 0) {
-				    bS += 0
-					n = n / b
+			    if (quotient % base == 0) {
+				    baseStr += 0
+					quotient = quotient / base
 				} else {
-				    bS += n % b
-				    n = (n-n%b) / b
+				    baseStr += quotient % base
+				    quotient = (quotient-quotient%base) / base
 			    }
 		    }
 		}
-	} else if (b >= 11 && b <= 16 ) {
-	    // Convert user input to chosen base from base 11 - base 16
-		while (n > b-1) {
-			if (n == b) {
-				bS += 0
-				n = n / b
+	} else if (base >= 11 && base <= 16 ) {
+	    // Convert quotient to chosen base from base 11 - base 16
+		while (quotient > base-1) {
+			if (quotient == base) {
+				baseStr += 0
+				quotient = quotient / base
 			} else {
-				if (n % b == 0) {
-					bS += 0
-					n = n / b
-				} else if (String(n%b) in dL) {
-					bS += dL[String(n%b)]
-					n = (n-n%b) / b
+				if (quotient % base == 0) {
+					baseStr += 0
+					quotient = quotient / base
+				} else if (String(quotient%base) in digLet) {
+					baseStr += digLet[String(quotient%base)]
+					quotient = (quotient-quotient%base) / base
 				} else {
-					bS += n % b
-					n = (n-n%b) / b
+					baseStr += quotient % base
+					quotient = (quotient-quotient%base) / base
 				}
 			}
 		}
@@ -74,111 +88,105 @@ function baseConversion(i, n, b, dL) {
         return 0
     }
 
-	// Append final non-zero remainder to base string
-	if (String(n) in lD) {
-		bS += dL[String(n)]
+	// append final non-zero remainder to base number
+    // FIX: allow input of lowercase/uppercase letter digits
+	if (String(quotient) in digLet) {
+		baseStr += digLet[String(quotient)]
 	} else {
-		bS += n
+		baseStr += quotient
 	}
-    returnedValues.push(bS)
+    returned.push(baseStr)
 
-	// Checks for decimal point
-	if (i.includes('.')) {
-		let decNum = Number(i.substring(i.indexOf('.'))) * b
-		let dNL = i.substring(i.indexOf('.')).length-1
+	// Example: uin = 23.30
+	if (uinStr.includes('.')) {
+		let decNum = Number(uinStr.substring(uinStr.indexOf('.'))) * base // decNum = .30 * base
+		let dNLength = Number(uinStr.substring(uinStr.indexOf('.')).length-1) // dNLength = 2 (length of fractional)
 
 		// Calculates number after decimal point
 		for (let i = 0; i < 6; i++) {
 			if (!String(decNum).includes('.')) {
-				dS += decNum
+				decStr += decNum
 				break
 			} else {
-				// Appends .quotient * radix
-				let wholeNum = String(decNum).substring(0, String(decNum).indexOf('.'))
-				let decimal = String(decNum).substring(String(decNum).indexOf('.'))
-                if (Number(wholeNum) > 9) {
-					dS += lD[String(wholeNum)]
-					decNum = (Number(decimal) * b).toFixed(dNL)
-				} else if (Number(wholeNum) > 0) {
-                    dS += wholeNum
-					decNum = (Number(decimal) * b).toFixed(dNL)
+				// Appends fractional of quotient * radix
+				let wholeFrac = String(decNum).substring(0, String(decNum).indexOf('.'))
+				let fractional = String(decNum).substring(String(decNum).indexOf('.'))
+                if (Number(wholeFrac) > 9) {
+					decStr += digLet[String(wholeFrac)]
+					decNum = (Number(fractional) * base).toFixed(dNLength)
+				} else if (Number(wholeFrac) > 0) {
+                    decStr += wholeFrac
+					decNum = (Number(fractional) * base).toFixed(dNLength)
                 } else {
-                    dS += 0
-					decNum = (Number(decimal) * b).toFixed(dNL)
+                    decStr += 0
+					decNum = (Number(fractional) * base).toFixed(dNLength)
                 }
 			}
 		}
-        returnedValues.push(dS)
-        returnedValues.push(Number(dNL))
+        returned.push(decStr)
+        returned.push(Number(dNLength))
 	}
-    return returnedValues
+    return returned // Array of values to store into variables below
 }
 
-// Check user input, output accordingly
+// CHECK USER INPUT - OUTPUT ACCORDINGLY
 d2BaseBtn.addEventListener("click", function() {
 	d2BaseOutput.textContent = ""
 	
-    // Variables for baseConversion()
-    let inputStr = String(d2BaseInput.value)
-	let myNum = d2BaseInput.value
+    // variables for baseConversion()
+	let userNum = d2BaseInput.value
 	let base = Number(String(d2BaseDropdown.value).substring(String(d2BaseDropdown.value).indexOf('-')+1))
 	let finalConversion = ""
 
-    if (inputStr.length == 0 || inputStr.match(/[a-zA-Z]/g)) {
+    if (userNum.length == 0 || userNum.match(/[a-zA-Z]/g)) {
         d2BaseOutput.textContent = "Please enter a valid decimal number!"
     } else {
-        // i, n, b, dL
-        // Returns "baseStr", "decStr" and "decNumLength"
-        finalConversion = baseConversion(inputStr, myNum, base, digitLetters)
+        // final concatenation and output of converted decimal to base number
+        finalConversion = baseConversion(userNum, base, digitLetters)
         if (finalConversion == 0) {
             d2BaseOutput.textContent = "Please choose a radix!"
         } else {
             baseStr = finalConversion[0]
             decStr = finalConversion[1]
             decNumLength = finalConversion[2]
-            // Checks for decimal point, reverses strings and outputs accordingly
-	        if (String(d2BaseInput.value).includes('.')) {
-		        // Reverse baseStr for output (decimal point)
+	        if (userNum.includes('.')) {
+		        // reverse baseStr for output (decimal point)
 		        let ans = ""
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
 		        if (d2BaseDropdown.value == "base-2") {
-			        d2BaseOutput.textContent = d2BaseInput.value + " in binary: " + ans + "." + decStr
+			        d2BaseOutput.textContent = userNum + " in binary: " + ans + "." + decStr
 		        } else if (base == 10) {
-			        let decNumLength = inputStr.substring(inputStr.indexOf('.')).length-1
-			        d2BaseOutput.textContent = d2BaseInput.value + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+			        let decNumLength = userNum.substring(userNum.indexOf('.')).length-1
+			        d2BaseOutput.textContent = userNum + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		        } else {
-			        d2BaseOutput.textContent = d2BaseInput.value + " in base " + base + ": " + ans + "." + decStr
+			        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans + "." + decStr
 		        }
 	        } else {
-		        // Reverse baseStr for output (no decimal point)
+		        // reverse baseStr for output (no decimal point)
 		        let ans = ""
 		        for (let i = baseStr.length-1; i >= 0; i--) {
 			        ans += baseStr[i]
 		        }
 		        if (d2BaseDropdown.value == "base-2") {
-			        d2BaseOutput.textContent = d2BaseInput.value + " in binary: " + ans
+			        d2BaseOutput.textContent = userNum + " in binary: " + ans
 		        } else {
-			        d2BaseOutput.textContent = d2BaseInput.value + " in base " + base + ": " + ans
+			        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans
 		        }
 	        }
         }
     }
-	d2BaseInput.value = ""
+	userNum = ""
 })
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~                    BASE NUMBER CALCULATOR                    ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Object of numbers assigned to letter digit symbols
-let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
-
-// Add, subtract, multipy or divide base numbers
+// add, subtract, multipy or divide base numbers
 function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
-    //FIX: Convert arrays to strings for less mem usage
     let num1Arr = []
     let num2Arr = []
     let iterations = 0
