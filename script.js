@@ -330,35 +330,49 @@ calculate.addEventListener("click", function() {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~          BASE NUMBER TO DECIMAL (base 10) CONVERTER          ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// CALCULATE BASE NUMBER CONVERSION TO DECIMAL
+function baseToDecimal(b2DecIn, b) {
+    // FIX: Convert letter digits to check if they're greater than the base
+    // FIX: Add functionality to convert base numbers with decimal points
+    let input = b2DecIn
+    let base = b
+    let baseChecker = ""
+    let position = 0
+    let conversion = 0
+
+    for (let i = input.length-1; i >= 0; i--) {
+        if (input[i] > base-1) {
+            baseChecker = input[i]
+            break
+        } else {
+            conversion += input[i] * (base ** position)
+            position += 1
+        }
+    }
+    if (!baseChecker) {
+        return Number(conversion)
+    } else {
+        return "Invalid digit symbol in base " + base + ": " + baseChecker
+    }
+}
+
+// OUTPUT CONVERTED BASE NUMBER
 b2DecBtn.addEventListener("click", function() {
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
     let input = b2DecInput.value
-    let conversion = 0
-    let position = 0
-    let baseChecker = ""
 
     if (!input) {
         b2DecOutput.textContent = "Please enter your base number"
     } else if (!base) {
         b2DecOutput.textContent = "Please choose a valid base"
     } else {
-        for (let i = input.length-1; i >= 0; i--) {
-            if (input[i] > base-1) {
-                baseChecker = input[i]
-                break
-            } else {
-                conversion += input[i] * (base ** position)
-                position += 1
-            }
-        }
-        if (!baseChecker) {
-            b2DecOutput.textContent = conversion
+        baseToDecimal(input, base)
+        if (typeof(baseToDecimal(input, base)) === "number") {
+            b2DecOutput.textContent = baseToDecimal(input, base)
         } else {
-            b2DecOutput.textContent = "Invalid digit symbol in base " + base + ": " + baseChecker
+            b2DecOutput.textContent = baseToDecimal(input, base)
             input.value = ""
         }
     }
-
-    // FIX: Convert letter digits to check if they're greater than the base
-    // FIX: Add functionality to convert base numbers with decimal points
 })
