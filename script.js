@@ -219,6 +219,7 @@ function calculateBases(n1, n2, o) {
                 } else {
                     num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                 }
+            // FIX: replace "NaN" check with functionality from baseToDecimal()
             } else if (typeof(num2[i] === "NaN")) {
                 invalidDigitSymbol.push(num2[i])
                 return invalidDigitSymbol
@@ -303,6 +304,7 @@ add.addEventListener("click", function() {
 })
 
 // Outputs calculated base number
+// FIX: Output error message when num2 is empty and calculate is pressed (while loop that starts over?)
 calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
@@ -339,37 +341,46 @@ function baseToDecimal(b2DecIn, b) {
     let position = 0
     let conversion = 0
 
-
     // let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
     // let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
     let fractionalStr = ""
     let fractional = 0
-    if (b2DecIn.includes(".")/*&& Number(b2DecIn.substring(b2DecIn.indexOf('.')+1)) > 0*/) {
+    if (b2DecIn.includes(".")) {
         fractionalStr = b2DecIn.substring(b2DecIn.indexOf('.')+1)
         input = b2DecIn.substring(0, b2DecIn.indexOf('.'))
         if (fractionalStr == "") {
             return "Please enter number after decimal point!"
-        } else if (fractionalStr.match(/[a-zA-Z]/g)) {
+        } else {
             for (let i = 0; i < fractionalStr.length; i++) {
-                if (String(fractionalStr[i]).toUpperCase() in letterDigits) {
-                    if (letterDigits[String(fractionalStr[i]).toUpperCase()] > base-1) {
-                        return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                if (fractionalStr[i].match(/[a-zA-Z]/g)) {
+                    if (String(fractionalStr[i]).toUpperCase() in letterDigits) {
+                        if (letterDigits[String(fractionalStr[i].toUpperCase())] > base-1) {
+                            return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                        } else {
+                            fractional += letterDigits[String(fractionalStr[i]).toUpperCase()] / base ** (i+1)
+                        }
                     } else {
-                        //  FIX:
-                        return "Add code to calculate decimals with letter digits"
+                        return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
                     }
                 } else {
-                    return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                    if (fractionalStr[i] > base-1) {
+                        return "Invalid digit symbol in base " + base + ": " + "'" + fractionalStr[i] + "'"
+                    } else {
+                        fractional += fractionalStr[i] / base ** (i+1)
+                    }
                 }
             }
-        } else {
-            // FIX: 
-            return "Add code to calculate number decimals"
         }
     } else {
         input = b2DecIn
     }
 
+    console.log("input.length: " + input.length)
+    console.log("fractional: " + fractional)
+
+    if (fractional > 0 && input.length == 0) {
+        return Number(0 + fractional)
+    }
     for (let i = input.length-1; i >= 0; i--) {
         if (String(input[i]).toUpperCase() in letterDigits) {
             if (letterDigits[String(input[i]).toUpperCase()] > base-1) {
