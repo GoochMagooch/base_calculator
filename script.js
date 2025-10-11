@@ -26,6 +26,9 @@ let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": 
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+// FIX: set limit on input or output
+// Suggestion: turn base8 and base16 to octal and hex
 // RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
 function baseConversion(uin, uBase, digLet) {
     // n = Number(quotient with decimal)
@@ -186,24 +189,26 @@ function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
-    let iterations = 0
+    let iterations = 0 
 
     let invalidDigitSymbol = []
     if (o == "+") {
         for (let i = num1.length-1; i >= 0; i--) {
             let tempStr = num1[i]
-            if (tempStr.toUpperCase() in letterDigits) {
-                if (Number(letterDigits[tempStr.toUpperCase()]) > radix - 1) {
-                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
-                    return invalidDigitSymbol
+            if (tempStr.match(/[a-zA-Z]/g)) {
+                if (tempStr.toUpperCase() in letterDigits) {
+                    if (letterDigits[tempStr.toUpperCase()] >= radix) {
+                        invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
+                        return invalidDigitSymbol
+                    } else {
+                        num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
+                    }
                 } else {
-                    num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
+                    invalidDigitSymbol.push(num1[i])
+                    return invalidDigitSymbol
                 }
-            } else if (typeof(num1[i] === "NaN")) {
-                invalidDigitSymbol.push(num1[i])
-                return invalidDigitSymbol
             } else {
-                if (Number(num1[i]) > radix - 1) {
+                if (tempStr >= radix) {
                     return Number(num1[i])
                 } else {
                     num1Arr.push(Number(num1[i]))
@@ -212,25 +217,25 @@ function calculateBases(n1, n2, o) {
         }
         for (let i = num2.length-1; i >= 0; i--) {
             let tempStr = num2[i]
-            if (tempStr.toUpperCase() in letterDigits) {
-                if (Number(letterDigits[tempStr.toUpperCase()]) > radix - 1) {
-                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
-                    return invalidDigitSymbol
+            if (tempStr.match(/[a-zA-Z]/g)) {
+                if (tempStr.toUpperCase() in letterDigits) {
+                    if (letterDigits[tempStr.toUpperCase()] > radix-1) {
+                        invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
+                        return invalidDigitSymbol
+                    } else {
+                        num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
+                    }
                 } else {
-                    num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
+                    invalidDigitSymbol.push(Number(num2[i]))
+                    return invalidDigitSymbol
                 }
-            // FIX: replace "NaN" check with functionality from baseToDecimal()
-            } else if (typeof(num2[i] === "NaN")) {
-                invalidDigitSymbol.push(num2[i])
-                return invalidDigitSymbol
             } else {
-                if (Number(num2[i]) > radix - 1) {
+                if (tempStr > radix-1) {
                     return Number(num2[i])
                 } else {
                     num2Arr.push(Number(num2[i]))
                 }
             }
-
         }
     }
 
@@ -249,7 +254,7 @@ function calculateBases(n1, n2, o) {
         iterations = num1Arr.length
     }
 
-    let temp = ""
+    let ans = ""
     let remainder = false
     // calculates expression
     for (let i = 0; i < iterations; i++) {
@@ -257,17 +262,16 @@ function calculateBases(n1, n2, o) {
             let sumR = num1Arr[i] + num2Arr[i] + 1 // sum with remainder
             if (sumR >= radix) {
                 if (sumR - radix > 9) {
-                    temp = digitLetters[sumR - radix] + temp
+                    ans = digitLetters[sumR - radix] + ans
                 } else {
-                    temp = (String(sumR - radix)) + temp
+                    ans = (String(sumR - radix)) + ans
                 }
             } else {
                 if (sumR - radix > 9) {
-                    temp = String(sumR) + temp
+                    ans = String(sumR) + ans
                 } else {
-                    temp = (digitLetters[sumR]) + temp
+                    ans = String(sumR) + ans
                 }
-                temp = String(sumR) + temp
                 remainder = false
             }
         } else {
@@ -275,22 +279,27 @@ function calculateBases(n1, n2, o) {
             if (sumNR >= radix) {
                 remainder = true
                 if (sumNR - radix > 9) {
-                    temp = digitLetters[sumNR - radix] + temp
+                    // key may need to be called as String
+                    ans = digitLetters[sumNR - radix] + ans
                 } else {
-                    temp = String(sumNR - radix) + temp
+                    ans = String(sumNR - radix) + ans
                 }
             } else {
-                temp = String(sumNR - radix) + temp
+                if (sumNR > 9) {
+                    ans = digitLetters[String(sumNR)] + ans
+                } else {
+                    ans = String(radix - sumNR) + ans
+                }
             }
         }
     }
 
+
     // pushes trailing '1' if necessary during final sum
     if (remainder == true) {
-        temp = "1" + temp
+        ans = "1" + ans
     }
-
-    return temp
+    return ans
 }
 
 let num1 = ""
@@ -319,6 +328,8 @@ calculate.addEventListener("click", function() {
         if (typeof(ans) === "number" && ans >= radix) {
             calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
             calcOutput.value = ""
+            num1 = ""
+            num2 = ""
         } else if (typeof(ans) === "object") {
             calcOutput.textContent = "Digit symbol '" + ans[0] + "' is invalid in Base " + radix
             calcOutput.value = ""
