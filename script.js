@@ -20,21 +20,46 @@ let b2DecDropdown = document.getElementById("b2Dec-choices")
 // OBJECT OF ALPHA DIGIT SYMBOLS ASSIGNED TO NUMBERS
 let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
 // OBJECT OF NUMBERS ASSIGNED TO ALPHA DIGIT SYMBOLS
-let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
+let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
+
+function checkInput(i, b, f) {
+    // i = input
+    // b = base
+    // f = determines if d2Base or b2Decimal are running this function
+    // 0 for d2Base, 1 for b2Decimal
+
+    if (i.length > 10) {
+        return "Please enter a number with 10 digits or less"
+    } else if (i == "") {
+        return "Please enter a valid decimal number!"
+    } else if (i.match(/\s/g)) {
+        return "Please remove any spaces from your number!"
+    } else if (f == "d2Base") {
+        if (i.match(/[^0-9\.$]/g)) {
+            return "Invalid digit symbol/s in Base 10: " + i.match(/[^0-9\.$]/g)
+        } else if (b == "") {
+            return "Please choose a radix!"
+        } else {
+            return 0
+        }
+    } else if (f == "b2Decimal") {
+        if (b == "") {
+            return "Please choose a radix!"
+        } else if (b <= 9 && i.match(/[^0-9\.$]/g)) {
+            return "Invalid digit symbol/s in Base " + b + ": " + i.match(/[^0-9\.$]/g)
+        } else {
+            return 0
+        }
+    }
+}
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 // FIX: set limit on input or output
 // Suggestion: turn base8 and base16 to octal and hex
 // RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
 function baseConversion(uin, uBase, digLet) {
-    // n = Number(quotient with decimal)
-    // i = quotient (no decimal)
-    // replace any 'i' or 'n' with 'quotient'
-
     // quotient string
     let uinStr = String(uin)
 
@@ -96,6 +121,7 @@ function baseConversion(uin, uBase, digLet) {
 	}
     returned.push(baseStr)
 
+    // FIX: Add check for no input after decimal
 	// Example: uin = 23.30
 	if (uinStr.includes('.')) {
 		let decNum = Number(uinStr.substring(uinStr.indexOf('.'))) * base // decNum = .30 * base
@@ -137,53 +163,41 @@ d2BaseBtn.addEventListener("click", function() {
 	let base = Number(String(d2BaseDropdown.value).substring(String(d2BaseDropdown.value).indexOf('-')+1))
 	let finalConversion = ""
 
-    if (userNum.length > 10) {
-        d2BaseOutput.textContent = "Please enter a number with 10 digits or less"
-        userNum = ""
-    } else if (userNum == "") {
-        d2BaseOutput.textContent = "Please enter a valid decimal number!"
-    } else if (userNum.match(/\s/g)) {
-        d2BaseOutput.textContent = "Please remove any spaces from your number!"
-        userNum = ""
-    } else if (userNum.match(/[^0-9]/g)) {
-        d2BaseOutput.textContent = "Invalid digit symbol/s in Base 10: " + userNum.match(/[^0-9\s]/g) 
-        userNum = ""
-    } else {
+    if (checkInput(userNum, base, "d2Base") == 0) {
         // final concatenation and output of converted decimal to base number
         finalConversion = baseConversion(userNum, base, digitLetters)
-        if (finalConversion == 0) {
-            d2BaseOutput.textContent = "Please choose a radix!"
-        } else {
-            baseStr = finalConversion[0]
-            decStr = finalConversion[1]
-            decNumLength = finalConversion[2]
-	        if (userNum.includes('.')) {
-		        // reverse baseStr for output (decimal point)
-		        let ans = ""
-		        for (let i = baseStr.length-1; i >= 0; i--) {
-			        ans += baseStr[i]
-		        }
-		        if (d2BaseDropdown.value == "base-2") {
-			        d2BaseOutput.textContent = userNum + " in binary: " + ans + "." + decStr
-		        } else if (base == 10) {
-			        let decNumLength = userNum.substring(userNum.indexOf('.')).length-1
-			        d2BaseOutput.textContent = userNum + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
-		        } else {
-			        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans + "." + decStr
-		        }
-	        } else {
-		        // reverse baseStr for output (no decimal point)
-		        let ans = ""
-		        for (let i = baseStr.length-1; i >= 0; i--) {
-			        ans += baseStr[i]
-		        }
-		        if (d2BaseDropdown.value == "base-2") {
-			        d2BaseOutput.textContent = userNum + " in binary: " + ans
-		        } else {
-			        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans
-		        }
+        baseStr = finalConversion[0]
+        decStr = finalConversion[1]
+        decNumLength = finalConversion[2]
+	    if (userNum.includes('.')) {
+		    // reverse baseStr for output (decimal point)
+		    let ans = ""
+		    for (let i = baseStr.length-1; i >= 0; i--) {
+			    ans += baseStr[i]
+		    }
+		    if (d2BaseDropdown.value == "base-2") {
+		        d2BaseOutput.textContent = userNum + " in binary: " + ans + "." + decStr
+	        } else if (base == 10) {
+			    let decNumLength = userNum.substring(userNum.indexOf('.')).length-1
+			    d2BaseOutput.textContent = userNum + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+		    } else {
+		        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans + "." + decStr
+	        }
+	    } else {
+	        // reverse baseStr for output (no decimal point)
+	        let ans = ""
+		    for (let i = baseStr.length-1; i >= 0; i--) {
+		        ans += baseStr[i]
+	        }
+	        if (d2BaseDropdown.value == "base-2") {
+			    d2BaseOutput.textContent = userNum + " in binary: " + ans
+		    } else {
+		        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans
 	        }
         }
+    } else {
+        d2BaseOutput.textContent = checkInput(userNum, base, "d2Base")
+        userNum = ""
     }
 	userNum = ""
 })
@@ -425,14 +439,10 @@ function baseToDecimal(b2DecIn, b) {
 
 // OUTPUT CONVERTED BASE NUMBER
 b2DecBtn.addEventListener("click", function() {
-    let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
     let input = b2DecInput.value
+    let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
 
-    if (!input) {
-        b2DecOutput.textContent = "Please enter your base number"
-    } else if (!base) {
-        b2DecOutput.textContent = "Please choose a valid base"
-    } else {
+    if (checkInput(input, base, "b2Decimal") == 0) {
         baseToDecimal(input, base)
         if (typeof(baseToDecimal(input, base)) === "number") {
             b2DecOutput.textContent = baseToDecimal(input, base)
@@ -440,5 +450,8 @@ b2DecBtn.addEventListener("click", function() {
             b2DecOutput.textContent = baseToDecimal(input, base)
             input.value = ""
         }
+    } else {
+        b2DecOutput.textContent = checkInput(input, base, "b2Decimal")
+        input.value = ""
     }
 })
