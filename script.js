@@ -17,9 +17,9 @@ let b2DecBtn = document.getElementById("b2Dec-btn")
 let b2DecOutput = document.getElementById("b2Dec-output")
 let b2DecDropdown = document.getElementById("b2Dec-choices")
 
-// OBJECT OF LETTER DIGIT SYMBOLS ASSIGNED TO NUMBERS
+// OBJECT OF ALPHA DIGIT SYMBOLS ASSIGNED TO NUMBERS
 let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-// OBJECT OF NUMBERS ASSIGNED TO LETTER DIGIT SYMBOLS
+// OBJECT OF NUMBERS ASSIGNED TO ALPHA DIGIT SYMBOLS
 let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"} 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -45,7 +45,6 @@ function baseConversion(uin, uBase, digLet) {
 		quotient = Number(uinStr.substring(0, uinStr.indexOf('.')))
 	}
 
-    // 'returned' will eventually store 'baseStr', 'decStr' and 'dNLength' to be returned
     let returned = []
     let baseStr = ""
     let decStr = ""
@@ -138,8 +137,17 @@ d2BaseBtn.addEventListener("click", function() {
 	let base = Number(String(d2BaseDropdown.value).substring(String(d2BaseDropdown.value).indexOf('-')+1))
 	let finalConversion = ""
 
-    if (userNum.length == 0 || userNum.match(/[a-zA-Z]/g)) {
+    if (userNum.length > 10) {
+        d2BaseOutput.textContent = "Please enter a number with 10 digits or less"
+        userNum = ""
+    } else if (userNum == "") {
         d2BaseOutput.textContent = "Please enter a valid decimal number!"
+    } else if (userNum.match(/\s/g)) {
+        d2BaseOutput.textContent = "Please remove any spaces from your number!"
+        userNum = ""
+    } else if (userNum.match(/[^0-9]/g)) {
+        d2BaseOutput.textContent = "Invalid digit symbol/s in Base 10: " + userNum.match(/[^0-9\s]/g) 
+        userNum = ""
     } else {
         // final concatenation and output of converted decimal to base number
         finalConversion = baseConversion(userNum, base, digitLetters)
@@ -355,8 +363,6 @@ function baseToDecimal(b2DecIn, b) {
     let position = 0
     let conversion = 0
 
-    // let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-    // let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
     let fractionalStr = ""
     let fractional = 0
     if (b2DecIn.includes(".")) {
@@ -388,9 +394,6 @@ function baseToDecimal(b2DecIn, b) {
     } else {
         input = b2DecIn
     }
-
-    console.log("input.length: " + input.length)
-    console.log("fractional: " + fractional)
 
     if (fractional > 0 && input.length == 0) {
         return Number(0 + fractional)
