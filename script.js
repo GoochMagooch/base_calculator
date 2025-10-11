@@ -186,6 +186,8 @@ d2BaseBtn.addEventListener("click", function() {
 
 // add, subtract, multipy or divide base numbers
 function calculateBases(n1, n2, o) {
+    // FIX: add functionality for adding decimal numbers
+
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
@@ -313,13 +315,14 @@ add.addEventListener("click", function() {
 })
 
 // Outputs calculated base number
-// FIX: Output error message when num2 is empty and calculate is pressed (while loop that starts over?)
 calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let ans = calculateBases(num1, num2, op)
     calcOutput.textContent = ""
-    if (calcDrop.value == "") {
+    if (num2 == "") {
+        calcOutput.textContent = "Enter a second base number"
+    } else if (calcDrop.value == "") {
         num1 = ""
         num2 = ""
         calcInput.value = ""
