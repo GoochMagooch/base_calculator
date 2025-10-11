@@ -56,7 +56,7 @@ function checkInput(i, b, f) {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// FIX: set limit on input or output
+
 // Suggestion: turn base8 and base16 to octal and hex
 // RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
 function baseConversion(uin, uBase, digLet) {
@@ -70,9 +70,11 @@ function baseConversion(uin, uBase, digLet) {
 		quotient = Number(uinStr.substring(0, uinStr.indexOf('.')))
 	}
 
+    let dec = false
     let returned = []
     let baseStr = ""
     let decStr = ""
+    let dNLength = 0
 
     // convert quotient to chosen base from base 2 - base 10
 	if (base >= 1 && base <= 10) {
@@ -123,35 +125,65 @@ function baseConversion(uin, uBase, digLet) {
 
     // FIX: Add check for no input after decimal
 	// Example: uin = 23.30
-	if (uinStr.includes('.')) {
-		let decNum = Number(uinStr.substring(uinStr.indexOf('.'))) * base // decNum = .30 * base
-		let dNLength = Number(uinStr.substring(uinStr.indexOf('.')).length-1) // dNLength = 2 (length of fractional)
+    if (uinStr.includes('.')) {
+        if (uinStr.substring(uinStr.indexOf('.')+1) == "") {
+            console.log(uinStr.substring(uinStr.indexOf('.')+1))
+            return "Please enter number after decimal point!"
+        } else {
+		    let decNum = Number(uinStr.substring(uinStr.indexOf('.'))) * base // decNum = .30 * base
+		    dNLength = Number(uinStr.substring(uinStr.indexOf('.')).length-1) // dNLength = 2 (length of fractional)
 
-		// Calculates number after decimal point
-		for (let i = 0; i < 6; i++) {
-			if (!String(decNum).includes('.')) {
-				decStr += decNum
-				break
-			} else {
-				// Appends fractional of quotient * radix
-				let wholeFrac = String(decNum).substring(0, String(decNum).indexOf('.'))
-				let fractional = String(decNum).substring(String(decNum).indexOf('.'))
-                if (Number(wholeFrac) > 9) {
-					decStr += digLet[String(wholeFrac)]
-					decNum = (Number(fractional) * base).toFixed(dNLength)
-				} else if (Number(wholeFrac) > 0) {
-                    decStr += wholeFrac
-					decNum = (Number(fractional) * base).toFixed(dNLength)
-                } else {
-                    decStr += 0
-					decNum = (Number(fractional) * base).toFixed(dNLength)
-                }
-			}
+		    // Calculates number after decimal point
+		    for (let i = 0; i < 6; i++) {
+			    if (!String(decNum).includes('.')) {
+				    decStr += decNum
+				    break
+			    } else {
+				    // Appends fractional of quotient * radix
+				    let wholeFrac = String(decNum).substring(0, String(decNum).indexOf('.'))
+    				let fractional = String(decNum).substring(String(decNum).indexOf('.'))
+                    if (Number(wholeFrac) > 9) {
+		    			decStr += digLet[String(wholeFrac)]
+			    		decNum = (Number(fractional) * base).toFixed(dNLength)
+				    } else if (Number(wholeFrac) > 0) {
+                        decStr += wholeFrac
+    					decNum = (Number(fractional) * base).toFixed(dNLength)
+                    } else {
+                        decStr += 0
+			    		decNum = (Number(fractional) * base).toFixed(dNLength)
+                    }
+    			}
+	    	}
+            dec = true
+	    }
+    }
+
+    let ans = ""
+	if (dec == true) {
+		// reverse baseStr for output (decimal point)
+	    for (let i = baseStr.length-1; i >= 0; i--) {
+		    ans += baseStr[i]
 		}
-        returned.push(decStr)
-        returned.push(Number(dNLength))
-	}
-    return returned // Array of values to store into variables below
+	    if (d2BaseDropdown.value == "base-2") {
+           return uinStr + " in binary: " + ans + "." + decStr
+	    } else if (base == 10) {
+		    let decNumLength = uinStr.substring(userNum.indexOf('.')).length-1
+           return uinStr + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+		} else {
+           return uinStr + " in base " + base + ": " + ans + "." + decStr
+        }
+	} else {
+        // reverse baseStr for output (no decimal point)
+	    for (let i = baseStr.length-1; i >= 0; i--) {
+	        ans += baseStr[i]
+	    }
+	    if (base == "base-2") {
+		    return uinStr + " in binary: " + ans
+		} else {
+	        return uinStr + " in base " + base + ": " + ans
+        }
+    }
+
 }
 
 // CHECK USER INPUT - OUTPUT ACCORDINGLY
@@ -161,40 +193,9 @@ d2BaseBtn.addEventListener("click", function() {
     // variables for baseConversion()
 	let userNum = d2BaseInput.value
 	let base = Number(String(d2BaseDropdown.value).substring(String(d2BaseDropdown.value).indexOf('-')+1))
-	let finalConversion = ""
 
     if (checkInput(userNum, base, "d2Base") == 0) {
-        // final concatenation and output of converted decimal to base number
-        finalConversion = baseConversion(userNum, base, digitLetters)
-        baseStr = finalConversion[0]
-        decStr = finalConversion[1]
-        decNumLength = finalConversion[2]
-	    if (userNum.includes('.')) {
-		    // reverse baseStr for output (decimal point)
-		    let ans = ""
-		    for (let i = baseStr.length-1; i >= 0; i--) {
-			    ans += baseStr[i]
-		    }
-		    if (d2BaseDropdown.value == "base-2") {
-		        d2BaseOutput.textContent = userNum + " in binary: " + ans + "." + decStr
-	        } else if (base == 10) {
-			    let decNumLength = userNum.substring(userNum.indexOf('.')).length-1
-			    d2BaseOutput.textContent = userNum + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
-		    } else {
-		        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans + "." + decStr
-	        }
-	    } else {
-	        // reverse baseStr for output (no decimal point)
-	        let ans = ""
-		    for (let i = baseStr.length-1; i >= 0; i--) {
-		        ans += baseStr[i]
-	        }
-	        if (d2BaseDropdown.value == "base-2") {
-			    d2BaseOutput.textContent = userNum + " in binary: " + ans
-		    } else {
-		        d2BaseOutput.textContent = userNum + " in base " + base + ": " + ans
-	        }
-        }
+        d2BaseOutput.textContent = baseConversion(userNum, base, digitLetters)
     } else {
         d2BaseOutput.textContent = checkInput(userNum, base, "d2Base")
         userNum = ""
