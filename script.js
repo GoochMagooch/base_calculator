@@ -22,6 +22,7 @@ let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15":
 // OBJECT OF NUMBERS ASSIGNED TO ALPHA DIGIT SYMBOLS
 let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
 
+// FIX: Migrate all input checks to checkInput()
 function checkInput(i, b, f) {
     // i = input
     // b = base
@@ -123,7 +124,6 @@ function baseConversion(uin, uBase, digLet) {
 	}
     returned.push(baseStr)
 
-    // FIX: Add check for no input after decimal
 	// Example: uin = 23.30
     if (uinStr.includes('.')) {
         if (uinStr.substring(uinStr.indexOf('.')+1) == "") {
@@ -167,7 +167,7 @@ function baseConversion(uin, uBase, digLet) {
 	    if (d2BaseDropdown.value == "base-2") {
            return uinStr + " in binary: " + ans + "." + decStr
 	    } else if (base == 10) {
-		    let decNumLength = uinStr.substring(userNum.indexOf('.')).length-1
+		    let decNumLength = uinStr.substring(uinStr.indexOf('.')).length-1
            return uinStr + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		} else {
            return uinStr + " in base " + base + ": " + ans + "." + decStr
@@ -209,17 +209,67 @@ d2BaseBtn.addEventListener("click", function() {
 
 // add, subtract, multipy or divide base numbers
 function calculateBases(n1, n2, o) {
-    // FIX: add functionality for adding decimal numbers
-
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
-    let iterations = 0 
+    let iterator = 0
+
+    // FIX: decimal numbers functionality
+
+    let n1decLen = 0
+    let n2decLen = 0
+    // separate whole numbers and fractionals into strings (if necessary)
+    if (n1.includes('.') && n2.includes('.')) {
+        n1decLen = n1.substring(n1.indexOf('.')+1).length
+        n2decLen = n2.substring(n2.indexOf('.')+1).length
+        n1 = n1.substring(0, n1.indexOf('.')) + n1.substring(n1.indexOf('.')+1)
+        n2 = n2.substring(0, n2.indexOf('.')) + n2.substring(n2.indexOf('.')+1)
+    } else if (n1.includes('.')) {
+        n1decLen = n1.substring(n1.indexOf('.')+1).length
+        n1 = n1.substring(0, n1.indexOf('.')) + n1.substring(n1.indexOf('.')+1)
+    } else if (n2.includes('.')) {
+        n2decLen = n2.substring(n2.indexOf('.')+1).length
+        n2 = n2.substring(0, n2.indexOf('.')) + n2.substring(n2.indexOf('.')+1)
+    }
+
+    // set trailing 0s to n1, n2 or neither
+    if (n1decLen > 0 && n1decLen > 0) {
+        if (n1decLen > n2decLen) {
+            iterator = n1decLen - n2decLen
+            for (let i = 0; i < iterator; i++) {
+                n2 += "0"
+            }
+        } // FIX: add more here
+    } else if (n1decLen > 0) {
+        for (let i = 0; i < n1decLen; i++) {
+            n2 += "0"
+        }
+    } else {
+        for (let i = 0; i < n2decLen; i++) {
+            n1 += "0"
+        }
+    }
+
+    // set leading 0s to n1, n2 or neither
+    if (n1.length > n2.length) {
+        iterator = n1.length
+        for (let i = 0; i < iterator; i++) {
+            n2 = "0" + n2
+        }
+    } else if (n2.length > n1.length) {
+        iterator = n2.length
+        for (let i = 0; i < iterator; i++) {
+            n1 = "0" + n1
+        }
+    } else {
+        iterator = n1.length
+    }
+
 
     let invalidDigitSymbol = []
     if (o == "+") {
-        for (let i = num1.length-1; i >= 0; i--) {
-            let tempStr = num1[i]
+        for (let i = n1.length-1; i >= 0; i--) {
+            let tempStr = n1[i]
             if (tempStr.match(/[a-zA-Z]/g)) {
                 if (tempStr.toUpperCase() in letterDigits) {
                     if (letterDigits[tempStr.toUpperCase()] >= radix) {
@@ -229,19 +279,19 @@ function calculateBases(n1, n2, o) {
                         num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                     }
                 } else {
-                    invalidDigitSymbol.push(num1[i])
+                    invalidDigitSymbol.push(n1[i])
                     return invalidDigitSymbol
                 }
             } else {
                 if (tempStr >= radix) {
-                    return Number(num1[i])
+                    return Number(n1[i])
                 } else {
-                    num1Arr.push(Number(num1[i]))
+                    num1Arr.push(Number(n1[i]))
                 }
             }
         }
-        for (let i = num2.length-1; i >= 0; i--) {
-            let tempStr = num2[i]
+        for (let i = n2.length-1; i >= 0; i--) {
+            let tempStr = n2[i]
             if (tempStr.match(/[a-zA-Z]/g)) {
                 if (tempStr.toUpperCase() in letterDigits) {
                     if (letterDigits[tempStr.toUpperCase()] > radix-1) {
@@ -251,38 +301,24 @@ function calculateBases(n1, n2, o) {
                         num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                     }
                 } else {
-                    invalidDigitSymbol.push(Number(num2[i]))
+                    invalidDigitSymbol.push(Number(n2[i]))
                     return invalidDigitSymbol
                 }
             } else {
                 if (tempStr > radix-1) {
-                    return Number(num2[i])
+                    return Number(n2[i])
                 } else {
-                    num2Arr.push(Number(num2[i]))
+                    num2Arr.push(Number(n2[i]))
                 }
             }
         }
     }
 
-    // set iterator and add trailing 0's for calculations
-    if (num1Arr.length > num2Arr.length) {
-        iterations = num1Arr.length
-        for (let i = 0; i < (num1Arr.length-num2Arr.length); i++) {
-            num2Arr.push(0)
-        }
-    } else if (num2Arr.length > num1Arr.length) {
-        iterations = num2Arr.length
-        for (let i = 0; i < (num2Arr.length-num1Arr.length); i++) {
-            num1Arr.push(0)
-        }
-    } else {
-        iterations = num1Arr.length
-    }
-
+    
     let ans = ""
     let remainder = false
     // calculates expression
-    for (let i = 0; i < iterations; i++) {
+    for (let i = 0; i < iterator; i++) {
         if (remainder == true) {
             let sumR = num1Arr[i] + num2Arr[i] + 1 // sum with remainder
             if (sumR >= radix) {
@@ -313,12 +349,11 @@ function calculateBases(n1, n2, o) {
                 if (sumNR > 9) {
                     ans = digitLetters[String(sumNR)] + ans
                 } else {
-                    ans = String(radix - sumNR) + ans
+                    ans = String(sumNR) + ans
                 }
             }
         }
     }
-
 
     // pushes trailing '1' if necessary during final sum
     if (remainder == true) {
