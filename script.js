@@ -359,6 +359,8 @@ function calculateBases(n1, n2, o) {
     if (remainder == true) {
         ans = "1" + ans
     }
+
+    ans = ans.substring(0, ans.indexOf(ans.charAt(ans.length-n1decLen))) + "." + ans.substring(ans.indexOf(ans.charAt(ans.length-n1decLen)))
     return ans
 }
 
