@@ -22,7 +22,8 @@ let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15":
 // OBJECT OF NUMBERS ASSIGNED TO ALPHA DIGIT SYMBOLS
 let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
 
-// FIX: Migrate all input checks to checkInput()
+// CHECKS INITIAL INPUTS
+// ~~~~~~~~~~~~~~~~~~~~~
 function checkInput(i, b, f) {
     // i = input
     // b = base
@@ -58,8 +59,9 @@ function checkInput(i, b, f) {
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Suggestion: turn base8 and base16 to octal and hex
+// FIX: turn base8 and base16 to octal and hex
 // RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function baseConversion(uin, uBase, digLet) {
     // quotient string
     let uinStr = String(uin)
@@ -187,6 +189,7 @@ function baseConversion(uin, uBase, digLet) {
 }
 
 // CHECK USER INPUT - OUTPUT ACCORDINGLY
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 d2BaseBtn.addEventListener("click", function() {
 	d2BaseOutput.textContent = ""
 	
@@ -207,15 +210,70 @@ d2BaseBtn.addEventListener("click", function() {
 // ~~~~~~~~~~                    BASE NUMBER CALCULATOR                    ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// add, subtract, multipy or divide base numbers
+// RETURNS SUM OF STRINGS FROM calculateBases()
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
+
+    let ans = ""
+    let remainder = false
+
+    // calculates sums and appends to 'ans'
+    // assigns alpha digit symbols
+    for (let i = 0; i < iAdd; i++) {
+        if (remainder == true) {
+            let sumR = addArr1[i] + addArr2[i] + 1 // sum with remainder
+            if (sumR >= addR) {
+                if (sumR - addR > 9) {
+                    ans = digitLetters[sumR - addR] + ans
+                } else {
+                    ans = (String(sumR - addR)) + ans
+                }
+            } else {
+                if (sumR - addR > 9) {
+                    ans = String(sumR) + ans
+                } else {
+                    ans = String(sumR) + ans
+                }
+                remainder = false
+            }
+        } else {
+            let sumNR = addArr1[i] + addArr2[i] // sum with no remainder
+            if (sumNR >= addR) {
+                remainder = true
+                if (sumNR - addR > 9) {
+                    ans = digitLetters[sumNR - addR] + ans
+                } else {
+                    ans = String(sumNR - addR) + ans
+                }
+            } else {
+                if (sumNR > 9) {
+                    ans = digitLetters[String(sumNR)] + ans
+                } else {
+                    ans = String(sumNR) + ans
+                }
+            }
+        }
+    }
+
+    // assigns leading 1 digit symbol to 'ans'
+    if (remainder == true) {
+        ans = "1" + ans
+    }
+    return ans
+}
+
+// CONVERTS INPUTS TO NECESSARY STRINGS AND RETURNS FORMATTED CALCULATIONS
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function calculateBases(n1, n2, o) {
+
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
 
     let n1decLen = 0
     let n2decLen = 0
-    // separate whole numbers and fractionals into strings (if necessary)
+
+    // separates whole numbers and fractionals into strings
     if (n1.includes('.') && n2.includes('.')) {
         n1decLen = n1.substring(n1.indexOf('.')+1).length
         n2decLen = n2.substring(n2.indexOf('.')+1).length
@@ -266,98 +324,62 @@ function calculateBases(n1, n2, o) {
     }
 
     let invalidDigitSymbol = []
-    if (o == "+") {
-        for (let i = n1.length-1; i >= 0; i--) {
-            let tempStr = n1[i]
-            if (tempStr.match(/[a-zA-Z]/g)) {
-                if (tempStr.toUpperCase() in letterDigits) {
-                    if (letterDigits[tempStr.toUpperCase()] >= radix) {
-                        invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
-                        return invalidDigitSymbol
-                    } else {
-                        num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
-                    }
-                } else {
-                    invalidDigitSymbol.push(n1[i])
+    for (let i = n1.length-1; i >= 0; i--) {
+        let tempStr = n1[i]
+        if (tempStr.match(/[a-zA-Z]/g)) {
+            if (tempStr.toUpperCase() in letterDigits) {
+                if (letterDigits[tempStr.toUpperCase()] >= radix) {
+                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
                     return invalidDigitSymbol
+                } else {
+                    num1Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                 }
             } else {
-                if (tempStr >= radix) {
-                    return Number(n1[i])
-                } else {
-                    num1Arr.push(Number(n1[i]))
-                }
-            }
-        }
-        for (let i = n2.length-1; i >= 0; i--) {
-            let tempStr = n2[i]
-            if (tempStr.match(/[a-zA-Z]/g)) {
-                if (tempStr.toUpperCase() in letterDigits) {
-                    if (letterDigits[tempStr.toUpperCase()] > radix-1) {
-                        invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
-                        return invalidDigitSymbol
-                    } else {
-                        num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
-                    }
-                } else {
-                    invalidDigitSymbol.push(Number(n2[i]))
-                    return invalidDigitSymbol
-                }
-            } else {
-                if (tempStr > radix-1) {
-                    return Number(n2[i])
-                } else {
-                    num2Arr.push(Number(n2[i]))
-                }
-            }
-        }
-    }
-
-    let ans = "" // FIX: calcAdd() (modulate add functionality)
-    let remainder = false
-    // calculates expression
-    for (let i = 0; i < iterator; i++) {
-        if (remainder == true) {
-            let sumR = num1Arr[i] + num2Arr[i] + 1 // sum with remainder
-            if (sumR >= radix) {
-                if (sumR - radix > 9) {
-                    ans = digitLetters[sumR - radix] + ans
-                } else {
-                    ans = (String(sumR - radix)) + ans
-                }
-            } else {
-                if (sumR - radix > 9) {
-                    ans = String(sumR) + ans
-                } else {
-                    ans = String(sumR) + ans
-                }
-                remainder = false
+                invalidDigitSymbol.push(n1[i])
+                return invalidDigitSymbol
             }
         } else {
-            let sumNR = num1Arr[i] + num2Arr[i] // sum with no remainder
-            if (sumNR >= radix) {
-                remainder = true
-                if (sumNR - radix > 9) {
-                    // key may need to be called as String
-                    ans = digitLetters[sumNR - radix] + ans
+            if (tempStr >= radix) {
+                return Number(n1[i])
+            } else {
+                num1Arr.push(Number(n1[i]))
+            }
+        }
+    }
+    for (let i = n2.length-1; i >= 0; i--) {
+        let tempStr = n2[i]
+        if (tempStr.match(/[a-zA-Z]/g)) {
+            if (tempStr.toUpperCase() in letterDigits) {
+                if (letterDigits[tempStr.toUpperCase()] > radix-1) {
+                    invalidDigitSymbol.push(digitLetters[letterDigits[tempStr.toUpperCase()]])
+                    return invalidDigitSymbol
                 } else {
-                    ans = String(sumNR - radix) + ans
+                    num2Arr.push(Number(letterDigits[tempStr.toUpperCase()]))
                 }
             } else {
-                if (sumNR > 9) {
-                    ans = digitLetters[String(sumNR)] + ans
-                } else {
-                    ans = String(sumNR) + ans
-                }
+                invalidDigitSymbol.push(Number(n2[i]))
+                return invalidDigitSymbol
+            }
+        } else {
+            if (tempStr > radix-1) {
+                return Number(n2[i])
+            } else {
+                num2Arr.push(Number(n2[i]))
             }
         }
     }
 
-    // pushes trailing '1' if necessary during final sum
-    if (remainder == true) {
-        ans = "1" + ans
+    let ans = ""
+    if (o == "*") {
+        return "Working on multiplication functionality!"
+    } else if (o == "/") {
+        return "Working on division functionality!"
+    } else if (o == "+") {
+        ans = calcAdd(n1, n2, iterator, num1Arr, num2Arr, radix)
+    } else {
+        return "Working on subtraction functionality!"
     }
-
+ 
     if (n1decLen > 0 || n2decLen > 0) {
         if (n1decLen > n2decLen) {
             return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
@@ -377,12 +399,15 @@ add.addEventListener("click", function() {
     calcInput.value = ""
 })
 
-// Outputs calculated base number
+// OUTPUTS CALCULATIONS
+// ~~~~~~~~~~~~~~~~~~~~
 calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let ans = calculateBases(num1, num2, op)
     calcOutput.textContent = ""
+
+    // FIX: Add checks to checkInput()
     if (num2 == "") {
         calcOutput.textContent = "Enter a second base number"
     } else if (calcDrop.value == "") {
@@ -411,6 +436,7 @@ calculate.addEventListener("click", function() {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // CALCULATE BASE NUMBER CONVERSION TO DECIMAL
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function baseToDecimal(b2DecIn, b) {
     let input = b2DecIn
     let base = b
@@ -479,6 +505,7 @@ function baseToDecimal(b2DecIn, b) {
 }
 
 // OUTPUT CONVERTED BASE NUMBER
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 b2DecBtn.addEventListener("click", function() {
     let input = b2DecInput.value
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
