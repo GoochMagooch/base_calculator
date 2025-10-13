@@ -212,9 +212,6 @@ function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
-    let iterator = 0
-
-    // FIX: decimal numbers functionality
 
     let n1decLen = 0
     let n2decLen = 0
@@ -235,11 +232,14 @@ function calculateBases(n1, n2, o) {
     // set trailing 0s to n1, n2 or neither
     if (n1decLen > 0 && n1decLen > 0) {
         if (n1decLen > n2decLen) {
-            iterator = n1decLen - n2decLen
-            for (let i = 0; i < iterator; i++) {
+            for (let i = 0; i < n1decLen-n2decLen; i++) {
                 n2 += "0"
             }
-        } // FIX: add more here
+        } else {
+            for (let i = 0; i < n2decLen-n1decLen; i++) {
+                n1 += "0"
+            }
+        }
     } else if (n1decLen > 0) {
         for (let i = 0; i < n1decLen; i++) {
             n2 += "0"
@@ -252,19 +252,18 @@ function calculateBases(n1, n2, o) {
 
     // set leading 0s to n1, n2 or neither
     if (n1.length > n2.length) {
-        iterator = n1.length
-        for (let i = 0; i < iterator; i++) {
+        for (let i = 0; i < n1.length-n2.length; i++) {
             n2 = "0" + n2
         }
+        iterator = n1.length
     } else if (n2.length > n1.length) {
-        iterator = n2.length
-        for (let i = 0; i < iterator; i++) {
+        for (let i = 0; i < n2.length-n1.length; i++) {
             n1 = "0" + n1
         }
+        iterator = n2.length
     } else {
         iterator = n1.length
     }
-
 
     let invalidDigitSymbol = []
     if (o == "+") {
@@ -314,8 +313,7 @@ function calculateBases(n1, n2, o) {
         }
     }
 
-    
-    let ans = ""
+    let ans = "" // FIX: calcAdd() (modulate add functionality)
     let remainder = false
     // calculates expression
     for (let i = 0; i < iterator; i++) {
@@ -360,7 +358,12 @@ function calculateBases(n1, n2, o) {
         ans = "1" + ans
     }
 
-    ans = ans.substring(0, ans.indexOf(ans.charAt(ans.length-n1decLen))) + "." + ans.substring(ans.indexOf(ans.charAt(ans.length-n1decLen)))
+    if (n1decLen > 0 || n2decLen > 0) {
+        if (n1decLen > n2decLen) {
+            return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+        }
+        return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+    }
     return ans
 }
 
