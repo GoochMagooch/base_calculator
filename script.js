@@ -9,7 +9,10 @@ let calcInput = document.getElementById("calc-input")
 let calculate = document.getElementById("calculate")
 let calcOutput = document.getElementById("calc-output")
 let calcDrop = document.getElementById("calc-choices")
+let mul = document.getElementById("mul")
+let div = document.getElementById("div")
 let add = document.getElementById("add")
+let sub = document.getElementById("sub")
 
 // BASE NUMBER TO DECIMAL CONVERSION VARIABLES
 let b2DecInput = document.getElementById("b2Dec-input")
@@ -207,17 +210,17 @@ d2BaseBtn.addEventListener("click", function() {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function calcMul() {
-    return 0
+    return "test mul"
 }
 
 function calcDiv() {
-    return 0
+    return "test div"
 }
 
 // RETURNS SUM OF STRINGS FROM calculateBases() ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
+function calcAdd(iAdd, addArr1, addArr2, addR) {
 
-    let ans = ""
+    let sum = ""
     let remainder = false
 
     // calculates sums and appends to 'ans'
@@ -227,15 +230,15 @@ function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
             let sumR = addArr1[i] + addArr2[i] + 1 // sum with remainder
             if (sumR >= addR) {
                 if (sumR - addR > 9) {
-                    ans = digitLetters[sumR - addR] + ans
+                    sum = digitLetters[sumR - addR] + sum
                 } else {
-                    ans = (String(sumR - addR)) + ans
+                    sum = (String(sumR - addR)) + sum
                 }
             } else {
                 if (sumR - addR > 9) {
-                    ans = String(sumR) + ans
+                    sum = String(sumR) + sum
                 } else {
-                    ans = String(sumR) + ans
+                    sum = String(sumR) + sum
                 }
                 remainder = false
             }
@@ -244,15 +247,15 @@ function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
             if (sumNR >= addR) {
                 remainder = true
                 if (sumNR - addR > 9) {
-                    ans = digitLetters[sumNR - addR] + ans
+                    sum = digitLetters[sumNR - addR] + sum
                 } else {
-                    ans = String(sumNR - addR) + ans
+                    sum = String(sumNR - addR) + sum
                 }
             } else {
                 if (sumNR > 9) {
-                    ans = digitLetters[String(sumNR)] + ans
+                    sum = digitLetters[String(sumNR)] + sum
                 } else {
-                    ans = String(sumNR) + ans
+                    sum = String(sumNR) + sum
                 }
             }
         }
@@ -260,13 +263,19 @@ function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
 
     // assigns leading 1 digit symbol to 'ans'
     if (remainder == true) {
-        ans = "1" + ans
+        sum = "1" + sum
     }
-    return ans
+    return sum
 }
 
-function calcSub() {
-    return 0
+function calcSub(iSub, subArr1, subArr2, subR) {
+    let diff = ""
+
+    for (let i = 0; i < iSub; i++) {
+        diff = (subArr1[i] - subArr2[i]) + diff
+    }
+
+    return diff
 }
 
 // CONVERTS INPUTS TO NECESSARY STRINGS AND RETURNS FORMATTED CALCULATIONS ~~~~~~~~~~
@@ -275,10 +284,9 @@ function calculateBases(n1, n2, o) {
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
     let num1Arr = []
     let num2Arr = []
-
     let n1decLen = 0
     let n2decLen = 0
-
+ 
     // separates whole numbers and fractionals into strings
     if (n1.includes('.') && n2.includes('.')) {
         n1decLen = n1.substring(n1.indexOf('.')+1).length
@@ -377,13 +385,13 @@ function calculateBases(n1, n2, o) {
 
     let ans = ""
     if (o == "*") {
-        return "Working on multiplication functionality!"
+        ans = calcMul(iterator, num1Arr, num2Arr, radix)
     } else if (o == "/") {
-        return "Working on division functionality!"
+        ans = calcDiv(iterator, num1Arr, num2Arr, radix)
     } else if (o == "+") {
-        ans = calcAdd(n1, n2, iterator, num1Arr, num2Arr, radix)
+        ans = calcAdd(iterator, num1Arr, num2Arr, radix)
     } else {
-        return "Working on subtraction functionality!"
+        ans = calcSub(iterator, num1Arr, num2Arr, radix)
     }
  
     if (n1decLen > 0 || n2decLen > 0) {
@@ -399,8 +407,26 @@ let num1 = ""
 let op = ""
 let num2 = ""
 
+mul.addEventListener("click", function() {
+    op = "*"
+    num1 = calcInput.value
+    calcInput.value = ""
+})
+
+div.addEventListener("click", function() {
+    op = "/"
+    num1 = calcInput.value
+    calcInput.value = ""
+})
+
 add.addEventListener("click", function() {
     op = "+"
+    num1 = calcInput.value
+    calcInput.value = ""
+})
+
+sub.addEventListener("click", function() {
+    op = "-"
     num1 = calcInput.value
     calcInput.value = ""
 })
