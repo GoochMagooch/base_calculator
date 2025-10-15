@@ -22,8 +22,7 @@ let digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15":
 // OBJECT OF NUMBERS ASSIGNED TO ALPHA DIGIT SYMBOLS
 let letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
 
-// CHECKS INITIAL INPUTS
-// ~~~~~~~~~~~~~~~~~~~~~
+// CHECKS INITIAL INPUTS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function checkInput(i, b, f) {
     // i = input
     // b = base
@@ -59,9 +58,7 @@ function checkInput(i, b, f) {
 // ~~~~~~~~~~      DECIMAL (base 10) NUMBER TO BASE NUMBER CONVERTER       ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// FIX: turn base8 and base16 to octal and hex
-// RETURNS CONVERTED NUMBERS AND A LENGTH VALUE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RETURNS CONVERTED NUMBERS AND A LENGTH VALUE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function baseConversion(uin, uBase, digLet) {
     // quotient string
     let uinStr = String(uin)
@@ -188,8 +185,7 @@ function baseConversion(uin, uBase, digLet) {
 
 }
 
-// CHECK USER INPUT - OUTPUT ACCORDINGLY
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CHECK USER INPUT - OUTPUT ACCORDINGLY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 d2BaseBtn.addEventListener("click", function() {
 	d2BaseOutput.textContent = ""
 	
@@ -210,8 +206,15 @@ d2BaseBtn.addEventListener("click", function() {
 // ~~~~~~~~~~                    BASE NUMBER CALCULATOR                    ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// RETURNS SUM OF STRINGS FROM calculateBases()
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function calcMul() {
+    return 0
+}
+
+function calcDiv() {
+    return 0
+}
+
+// RETURNS SUM OF STRINGS FROM calculateBases() ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
 
     let ans = ""
@@ -262,8 +265,11 @@ function calcAdd(addN1, addN2, iAdd, addArr1, addArr2, addR) {
     return ans
 }
 
-// CONVERTS INPUTS TO NECESSARY STRINGS AND RETURNS FORMATTED CALCULATIONS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function calcSub() {
+    return 0
+}
+
+// CONVERTS INPUTS TO NECESSARY STRINGS AND RETURNS FORMATTED CALCULATIONS ~~~~~~~~~~
 function calculateBases(n1, n2, o) {
 
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
@@ -399,8 +405,7 @@ add.addEventListener("click", function() {
     calcInput.value = ""
 })
 
-// OUTPUTS CALCULATIONS
-// ~~~~~~~~~~~~~~~~~~~~
+// OUTPUTS CALCULATIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 calculate.addEventListener("click", function() {
     num2 = calcInput.value
     let radix = Number(String(calcDrop.value).substring(String(calcDrop.value).indexOf('-')+1))
@@ -435,8 +440,7 @@ calculate.addEventListener("click", function() {
 // ~~~~~~~~~~          BASE NUMBER TO DECIMAL (base 10) CONVERTER          ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// CALCULATE BASE NUMBER CONVERSION TO DECIMAL
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CONVERT BASE NUMBER TO DECIMAL ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function baseToDecimal(b2DecIn, b) {
     let input = b2DecIn
     let base = b
@@ -504,8 +508,7 @@ function baseToDecimal(b2DecIn, b) {
     return Number(conversion)
 }
 
-// OUTPUT CONVERTED BASE NUMBER
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// OUTPUT CONVERTED BASE NUMBER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 b2DecBtn.addEventListener("click", function() {
     let input = b2DecInput.value
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
