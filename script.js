@@ -269,12 +269,30 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 }
 
 function calcSub(iSub, subArr1, subArr2, subR) {
+    // FIX: account for minuends that are less than subtrahend
     let diff = ""
 
     for (let i = 0; i < iSub; i++) {
-        diff = (subArr1[i] - subArr2[i]) + diff
-    }
+        let minuend = subArr1[i]
+        let subtrahend = subArr2[i]
 
+        if (minuend < subtrahend) {
+            let traverse = (i+1)
+            let borrow = false
+            while (borrow == false) {
+                if (subArr1[traverse] > subArr2[traverse]) {
+                    subArr1[traverse] -= 1
+                    borrow = true
+                } else {
+                    subArr1[traverse] = (subArr1[traverse] + subR - 1) + diff
+                    traverse += 1
+                }
+            }
+            diff = ((minuend + subR) - subtrahend) + diff
+        } else {
+            diff = (minuend - subtrahend) + diff
+        }
+    }
     return diff
 }
 
