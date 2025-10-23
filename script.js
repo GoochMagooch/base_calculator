@@ -209,15 +209,58 @@ d2BaseBtn.addEventListener("click", function() {
 // ~~~~~~~~~~                    BASE NUMBER CALCULATOR                    ~~~~~~~~~~
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function calcMul() {
-    return "test mul"
+// RETURNS PRODUCT OF n1 AND n2
+function calcMul(iMul, mulArr1, mulArr2, mulR) {
+    let product = 0
+    let carry = 0
+    let multiplicand = 0
+
+    for (let i = 0; i < iMul; i++) {
+        let multiplier = mulArr2[i]
+        let tempProd = ""
+        if (multiplier == "0") {
+            continue
+        } else {
+            for (let j = 0; j < iMul; j++) {
+                multiplicand = mulArr1[j]
+                let temp = multiplicand * multiplier
+                if (carry > 0) {
+                    temp = temp + carry
+                    if (temp > mulR) {
+                        tempProd = String(temp % (multiplicand * multiplier)) + tempProd
+                        if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
+                            carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
+                        } else if ((temp/mulR) >= 1) {
+                            carry = temp/mulR
+                        }
+                    } else {
+                        tempProd = String(mulR - temp) + tempProd
+                        carry = 0
+                    }
+                } else {
+                    if (temp >= mulR) {
+                        tempProd = String(temp % mulR) + tempProd
+                        if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
+                            carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
+                        } else if ((temp/mulR) >= 1) {
+                            carry = temp/mulR
+                        }
+                    } else {
+                        tempProd = (mulR - temp) + tempProd
+                    }
+                }
+            }
+        }
+        product += Number(tempProd)
+    }
+    return String(product)
 }
 
 function calcDiv() {
     return "test div"
 }
 
-// RETURNS SUM OF STRINGS FROM calculateBases() ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// RETURNS SUM OF n1 AND n2 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function calcAdd(iAdd, addArr1, addArr2, addR) {
 
     let sum = ""
@@ -268,6 +311,7 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
     return sum
 }
 
+// RETURNS DIFFERENCE OF n1 AND n2
 function calcSub(iSub, subArr1, subArr2, subR) {
     // FIX: account for minuends that are less than subtrahend
     let diff = ""
