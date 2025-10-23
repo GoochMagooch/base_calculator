@@ -214,14 +214,14 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let product = 0
     let carry = 0
     let multiplicand = 0
+    let multiplier = 0
 
-    // FIX: I think I'm coding to fit the specific situation of: 243 * 3 in base 6
-    // Code to fit every situation
     for (let i = 0; i < iMul; i++) {
-        let multiplier = mulArr2[i]
+        multiplier = mulArr2[i]
         let tempProd = ""
-        if (multiplier == "0") {
-            product += 0
+        // let multiplierCount = 0 // 0s are added to end of tempProd dependent of value of multiplierCount
+        if (multiplier == 0) {
+            continue
         } else {
             for (let j = 0; j < iMul; j++) {
                 multiplicand = mulArr1[j]
@@ -248,7 +248,8 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(mulR - temp) + tempProd
+                        tempProd = String(temp) + tempProd
+                        console.log("tempProd on iteration " + j + ": " + tempProd)
                     }
                 }
             }
@@ -258,9 +259,10 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             carry = 0
             product += Number(tempProd)
         }
-        console.log("inside loop: " + product)
+        // console.log("inside loop: " + product)
+        // console.log("carry: " + carry)
     }
-    console.log("outside loop: " + product)
+    // console.log("outside loop: " + product)
     return String(product)
 }
 
@@ -393,13 +395,22 @@ function calculateBases(n1, n2, o) {
     }
 
     // set leading 0s to n1, n2 or neither
+
+    let tempIterator = 0
     if (n1.length > n2.length) {
-        for (let i = 0; i < n1.length-n2.length; i++) {
+        tempIterator = (n1.length-n2.length)
+    } else if (n2.length > n1.length) {
+        tempIterator = (n2.length-n1.length)
+    }
+    const lead = tempIterator
+
+    if (n1.length > n2.length) {
+        for (let i = 0; i < lead; i++) {
             n2 = "0" + n2
         }
         iterator = n1.length
     } else if (n2.length > n1.length) {
-        for (let i = 0; i < n2.length-n1.length; i++) {
+        for (let i = 0; i < lead; i++) {
             n1 = "0" + n1
         }
         iterator = n2.length
@@ -407,6 +418,7 @@ function calculateBases(n1, n2, o) {
         iterator = n1.length
     }
 
+    // Allocates n1 and n2 to arrays to be calculated
     let invalidDigitSymbol = []
     for (let i = n1.length-1; i >= 0; i--) {
         let tempStr = n1[i]
