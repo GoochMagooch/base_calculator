@@ -215,11 +215,13 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let carry = 0
     let multiplicand = 0
 
+    // FIX: I think I'm coding to fit the specific situation of: 243 * 3 in base 6
+    // Code to fit every situation
     for (let i = 0; i < iMul; i++) {
         let multiplier = mulArr2[i]
         let tempProd = ""
         if (multiplier == "0") {
-            continue
+            product += 0
         } else {
             for (let j = 0; j < iMul; j++) {
                 multiplicand = mulArr1[j]
@@ -246,13 +248,19 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = (mulR - temp) + tempProd
+                        tempProd = String(mulR - temp) + tempProd
                     }
                 }
             }
+            if (carry > 0) {
+                tempProd = String(carry) + tempProd
+            }
+            carry = 0
+            product += Number(tempProd)
         }
-        product += Number(tempProd)
+        console.log("inside loop: " + product)
     }
+    console.log("outside loop: " + product)
     return String(product)
 }
 
