@@ -216,6 +216,8 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let multiplicand = 0
     let multiplier = 0
 
+    // FIX: logic that checks for 0s. 102 * 20 != 204
+    // FIX: calculations when temp > radix && carry > 0
     for (let i = 0; i < iMul; i++) {
         multiplier = mulArr2[i]
         let tempProd = ""
@@ -226,8 +228,10 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             for (let j = 0; j < iMul; j++) {
                 multiplicand = mulArr1[j]
                 let temp = multiplicand * multiplier
+                // console.log("temp on iteration " + j + ": " + temp)
                 if (carry > 0) {
                     temp = temp + carry
+                    // console.log(temp)
                     if (temp > mulR) {
                         tempProd = String(temp % (multiplicand * multiplier)) + tempProd
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
@@ -236,20 +240,22 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(mulR - temp) + tempProd
+                        tempProd = String(temp) + tempProd
+                        console.log(tempProd)
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
                         tempProd = String(temp % mulR) + tempProd
+                        console.log("tempProd: " + tempProd)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
+                    console.log("carry: " + carry)
                     } else {
                         tempProd = String(temp) + tempProd
-                        console.log("tempProd on iteration " + j + ": " + tempProd)
                     }
                 }
             }
@@ -257,7 +263,9 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 tempProd = String(carry) + tempProd
             }
             carry = 0
-            product += Number(tempProd)
+            if (tempProd.length > 0) {
+                product += Number(tempProd)
+            }
         }
         // console.log("inside loop: " + product)
         // console.log("carry: " + carry)
