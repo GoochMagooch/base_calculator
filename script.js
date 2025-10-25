@@ -217,7 +217,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let multiplier = 0
     let multCount = 0
 
-    // FIX: remove console logs after debugging is finished
+    // FIX: products are incorrect during long calculations
     // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
         multiplier = mulArr2[i]
