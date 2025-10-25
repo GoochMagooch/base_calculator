@@ -217,7 +217,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let multiplier = 0
 
     // FIX: logic that checks for 0s. 102 * 20 != 204
-    // FIX: calculations when temp > radix && carry > 0
+    // FIX: remove console logs after debugging is finished
     for (let i = 0; i < iMul; i++) {
         multiplier = mulArr2[i]
         let tempProd = ""
@@ -231,9 +231,11 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 // console.log("temp on iteration " + j + ": " + temp)
                 if (carry > 0) {
                     temp = temp + carry
+                    // console.log("temp when carry > 0: " + temp)
                     // console.log(temp)
                     if (temp > mulR) {
-                        tempProd = String(temp % (multiplicand * multiplier)) + tempProd
+                        tempProd = String(temp % mulR) + tempProd
+                        // console.log("tempProd when temp > mulR: " + tempProd)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
@@ -241,19 +243,19 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                         }
                     } else {
                         tempProd = String(temp) + tempProd
-                        console.log(tempProd)
+                        // console.log(tempProd)
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
                         tempProd = String(temp % mulR) + tempProd
-                        console.log("tempProd: " + tempProd)
+                        // console.log("tempProd: " + tempProd)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
-                    console.log("carry: " + carry)
+                    // console.log("carry: " + carry)
                     } else {
                         tempProd = String(temp) + tempProd
                     }
