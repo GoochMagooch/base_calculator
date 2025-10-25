@@ -215,27 +215,24 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let carry = 0
     let multiplicand = 0
     let multiplier = 0
+    let multCount = 0
 
-    // FIX: logic that checks for 0s. 102 * 20 != 204
     // FIX: remove console logs after debugging is finished
+    // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
         multiplier = mulArr2[i]
         let tempProd = ""
-        // let multiplierCount = 0 // 0s are added to end of tempProd dependent of value of multiplierCount
         if (multiplier == 0) {
+            multCount += 1
             continue
         } else {
             for (let j = 0; j < iMul; j++) {
                 multiplicand = mulArr1[j]
                 let temp = multiplicand * multiplier
-                // console.log("temp on iteration " + j + ": " + temp)
                 if (carry > 0) {
                     temp = temp + carry
-                    // console.log("temp when carry > 0: " + temp)
-                    // console.log(temp)
                     if (temp > mulR) {
                         tempProd = String(temp % mulR) + tempProd
-                        // console.log("tempProd when temp > mulR: " + tempProd)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
@@ -243,36 +240,35 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                         }
                     } else {
                         tempProd = String(temp) + tempProd
-                        // console.log(tempProd)
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
                         tempProd = String(temp % mulR) + tempProd
-                        // console.log("tempProd: " + tempProd)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
-                    // console.log("carry: " + carry)
                     } else {
                         tempProd = String(temp) + tempProd
                     }
                 }
             }
-            if (carry > 0) {
-                tempProd = String(carry) + tempProd
-            }
-            carry = 0
-            if (tempProd.length > 0) {
-                product += Number(tempProd)
-            }
         }
-        // console.log("inside loop: " + product)
-        // console.log("carry: " + carry)
+        console.log("multCount before increment: " + multCount)
+        for (let i = 0; i < multCount; i++) {
+            tempProd = tempProd + "0"
+        }
+        if (carry > 0) {
+            tempProd = String(carry) + tempProd
+        }
+        carry = 0
+        if (tempProd.length > 0) {
+            product += Number(tempProd)
+        }
+        multCount += 1
     }
-    // console.log("outside loop: " + product)
     return String(product)
 }
 
