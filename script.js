@@ -256,7 +256,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 }
             }
         }
-        console.log("multCount before increment: " + multCount)
         for (let i = 0; i < multCount; i++) {
             tempProd = tempProd + "0"
         }
