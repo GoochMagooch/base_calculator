@@ -239,48 +239,52 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 if (carry > 0) {
                     temp = temp + carry
                     if (temp > mulR) {
-                        tempArr.unshift(temp % mulR)
+                        tempProd = String(temp % mulR) + tempProd
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempArr.unshift(Number(temp))
+                        tempProd = String(temp) + tempProd
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
-                        tempArr.unshift(temp % mulR)
+                        tempProd = String(temp % mulR) + tempProd
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempArr.unshift(temp)
+                        tempProd = String(temp) + tempProd
                     }
                 }
             }
         }
 
-        // FIX: add each multiplier * multiplicand to a separate array of arrays
-        // to be able to find a final sum
-        for (let i = 0; i < multCount; i++) {
-            tempArr.unshift(0)
+        //FIX: tempArr not reinitializing to empty
+        for (let k = 0; k < multCount; k++) {
+            tempProd = tempProd + "0"
         }
         if (carry > 0) {
-            tempArr.unshift(carry)
+            tempProd = String(carry) + tempProd
         }
         carry = 0
-        for (let i = 0; i < addZero; i++) {
-            tempArr.unshift(0)
+        for (let l = 0; l < addZero; l++) {
+            tempProd = "0" + tempProd
         }
         addZero -= 1
-        prodArr.push(tempArr)
         multCount += 1
+
+        for (let o = 0; o < tempProd.length; o++) {
+            tempArr.push(tempProd[o])
+        }
+        prodArr.push(tempArr)
     }
 
+    // returns product with 1 multipler
     if (prodArr.length == 1) {
         for (let i = 0; i < prodArr[0].length; i++) {
             if (i < multiplierCount) {
@@ -289,16 +293,11 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 product = product + String(prodArr[0][i])
             }
         }
-        return String(product)
+        return product
+    // return product with > 1 multipler
+    } else {
+        return "test"
     }
-
-    // Calculate final sum if multiple products
-    for (let i = 0; i < (prodArr.length-1); i++) {
-        if (product.length == 0) {
-            
-        }
-    }
-    return String(prodArr)
 }
 
 function calcDiv() {
