@@ -212,12 +212,17 @@ d2BaseBtn.addEventListener("click", function() {
 // RETURNS PRODUCT OF n1 AND n2
 function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let product = 0
+    let prodArr = []
     let carry = 0
     let multiplicand = 0
     let multiplier = 0
     let multCount = 0
+    let addZero = mulArr2.length-1
 
-    // FIX: products are incorrect during long calculations
+    // FIX: product needs to be incremented by the base, not decimal
+    // 567 * 567 in octal should be 422521, not 400521
+    // possibly use calcAdd() for all product increments when multiplier > 1
+
     // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
         multiplier = mulArr2[i]
@@ -256,6 +261,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 }
             }
         }
+
         for (let i = 0; i < multCount; i++) {
             tempProd = tempProd + "0"
         }
@@ -263,12 +269,27 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             tempProd = String(carry) + tempProd
         }
         carry = 0
+        for (let i = 0; i < addZero; i++) {
+            tempProd = "0" + tempProd
+        }
+        console.log(tempProd)
+        addZero -= 1
         if (tempProd.length > 0) {
-            product += Number(tempProd)
+            prodArr.push(tempProd)
         }
         multCount += 1
     }
-    return String(product)
+
+    if (prodArr.length == 1) {
+        return String(prodArr[0])
+    }
+
+    /*
+    for (let i = 0; i < (prodArr.length-1); i++) {
+        
+    }
+    */
+    return String(prodArr)
 }
 
 function calcDiv() {
