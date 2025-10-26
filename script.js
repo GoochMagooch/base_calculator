@@ -220,10 +220,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let addZero = mulArr2.length-1
     const multiplierCount = mulArr2.length-1
 
-    // FIX: product needs to be incremented by the base, not decimal
-    // 567 * 567 in octal should be 422521, not 400521
-    // possibly use calcAdd() for all product increments when multiplier > 1
-
     // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
         let tempArr = []
@@ -263,8 +259,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 }
             }
         }
-
-        //FIX: tempArr not reinitializing to empty
         for (let k = 0; k < multCount; k++) {
             tempProd = tempProd + "0"
         }
@@ -278,16 +272,16 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         addZero -= 1
         multCount += 1
 
-        for (let o = 0; o < tempProd.length; o++) {
-            tempArr.push(tempProd[o])
+        for (let o = tempProd.length-1; o >= 0; o--) {
+            tempArr.push(Number(tempProd[o]))
         }
         prodArr.push(tempArr)
     }
 
     // returns product with 1 multipler
     if (prodArr.length == 1) {
-        for (let i = 0; i < prodArr[0].length; i++) {
-            if (i < multiplierCount) {
+        for (let i = prodArr[0].length-1; i >= 0; i--) {
+            if (i > (prodArr[0].length - 1) - multiplierCount) {
                 continue
             } else {
                 product = product + String(prodArr[0][i])
@@ -295,7 +289,15 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         }
         return product
     // return product with > 1 multipler
+    } else if (prodArr.length == 2) {
+        let param1 = Number(prodArr[0].length)
+        let param2 = prodArr[0]
+        let param3 = prodArr[1]
+        let param4 = Number(mulR)
+        // FIX: shave off leading 0's
+        return calcAdd(param1, param2, param3, param4)
     } else {
+        // FIX: add functionality for > 2 multipliers
         return "test"
     }
 }
@@ -498,6 +500,17 @@ function calculateBases(n1, n2, o) {
             }
         }
     }
+
+    /*
+    console.log("iterator type in calculateBases(): " + typeof(iterator))
+    console.log("iterator: " + iterator)
+    console.log("num1Arr: ")
+    console.log(num1Arr)
+    console.log("num2Arr: ")
+    console.log(num2Arr)
+    console.log("radix type in calculateBases(): " + typeof(radix))
+    console.log("radix: " + radix)
+    */
 
     let ans = ""
     if (o == "*") {
