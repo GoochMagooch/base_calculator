@@ -211,13 +211,14 @@ d2BaseBtn.addEventListener("click", function() {
 
 // RETURNS PRODUCT OF n1 AND n2
 function calcMul(iMul, mulArr1, mulArr2, mulR) {
-    let product = 0
+    let product = ""
     let prodArr = []
     let carry = 0
     let multiplicand = 0
     let multiplier = 0
     let multCount = 0
     let addZero = mulArr2.length-1
+    const multiplierCount = mulArr2.length-1
 
     // FIX: product needs to be incremented by the base, not decimal
     // 567 * 567 in octal should be 422521, not 400521
@@ -225,6 +226,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
 
     // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
+        let tempArr = []
         multiplier = mulArr2[i]
         let tempProd = ""
         if (multiplier == 0) {
@@ -237,58 +239,65 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 if (carry > 0) {
                     temp = temp + carry
                     if (temp > mulR) {
-                        tempProd = String(temp % mulR) + tempProd
+                        tempArr.unshift(temp % mulR)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(temp) + tempProd
+                        tempArr.unshift(Number(temp))
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
-                        tempProd = String(temp % mulR) + tempProd
+                        tempArr.unshift(temp % mulR)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(temp) + tempProd
+                        tempArr.unshift(temp)
                     }
                 }
             }
         }
 
+        // FIX: add each multiplier * multiplicand to a separate array of arrays
+        // to be able to find a final sum
         for (let i = 0; i < multCount; i++) {
-            tempProd = tempProd + "0"
+            tempArr.unshift(0)
         }
         if (carry > 0) {
-            tempProd = String(carry) + tempProd
+            tempArr.unshift(carry)
         }
         carry = 0
         for (let i = 0; i < addZero; i++) {
-            tempProd = "0" + tempProd
+            tempArr.unshift(0)
         }
-        console.log(tempProd)
         addZero -= 1
-        if (tempProd.length > 0) {
-            prodArr.push(tempProd)
-        }
+        prodArr.push(tempArr)
         multCount += 1
     }
 
     if (prodArr.length == 1) {
-        return String(prodArr[0])
+        for (let i = 0; i < prodArr[0].length; i++) {
+            if (i < multiplierCount) {
+                continue
+            } else {
+                product = product + String(prodArr[0][i])
+            }
+        }
+        return String(product)
     }
 
-    /*
+    // Calculate final sum if multiple products
     for (let i = 0; i < (prodArr.length-1); i++) {
-        
+        if (product.length == 0) {
+            
+        }
     }
-    */
     return String(prodArr)
 }
 
