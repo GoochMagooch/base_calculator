@@ -218,6 +218,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let multiplier = 0
     let multCount = 0
     const multiplierCount = mulArr2.length-1
+    let finalIterator = 0
 
     // FIX: add functionality for decimal numbers
     // FIX: add functionality to convert digit symbols > 9
@@ -267,6 +268,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         }
         carry = 0
         multCount += 1
+        finalIterator += 1
 
         for (let o = tempProd.length-1; o >= 0; o--) {
             tempArr.push(Number(tempProd[o]))
@@ -304,9 +306,8 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     } else {
-        //FIX: multiplcands > 3 digits won't multiply with multiplers > 2 digits
         product = calcAdd(param1, param2, param3, param4)
-        for (let i = 0; i < multCount - 2; i++) {
+        for (let i = 0; i < finalIterator - 2; i++) {
             let tempProdArr = []
             for (let j = product.length-1; j >= 0; j--) {
                 tempProdArr.push(Number(product[j]))
@@ -328,6 +329,14 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 
     let sum = ""
     let remainder = false
+
+    /*
+    console.log("addArr1: ")
+    console.log(addArr1)
+
+    console.log("addArr2: ")
+    console.log(addArr2)
+    */
 
     // calculates sums and appends to 'ans'
     // assigns alpha digit symbols
@@ -448,7 +457,6 @@ function calculateBases(n1, n2, o) {
     }
 
     // set leading 0s to n1, n2 or neither
-
     let tempIterator = 0
     if (n1.length > n2.length) {
         tempIterator = (n1.length-n2.length)
@@ -517,17 +525,6 @@ function calculateBases(n1, n2, o) {
             }
         }
     }
-
-    /*
-    console.log("iterator type in calculateBases(): " + typeof(iterator))
-    console.log("iterator: " + iterator)
-    console.log("num1Arr: ")
-    console.log(num1Arr)
-    console.log("num2Arr: ")
-    console.log(num2Arr)
-    console.log("radix type in calculateBases(): " + typeof(radix))
-    console.log("radix: " + radix)
-    */
 
     let ans = ""
     if (o == "*") {
