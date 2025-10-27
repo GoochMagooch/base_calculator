@@ -221,6 +221,8 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     const multiplierCount = mulArr2.length-1
 
     // FIX: add functionality for decimal numbers
+    // FIX: add functionality to convert digit symbols > 9
+    // add leading 0 when multiplicand < multiplier
     for (let i = 0; i < iMul; i++) {
         let tempArr = []
         multiplier = mulArr2[i]
@@ -278,6 +280,14 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         prodArr.push(tempArr)
     }
 
+    let param1 = Number(prodArr[0].length)
+    let param2 = prodArr[0]
+    let param3 = prodArr[1]
+    const param4 = Number(mulR)
+
+    console.log("prodArr: ")
+    console.log(prodArr)
+
     // returns product with 1 multipler
     if (prodArr.length == 1) {
         for (let i = prodArr[0].length-1; i >= 0; i--) {
@@ -290,15 +300,29 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         return product
     // return product with > 1 multipler
     } else if (prodArr.length == 2) {
-        let param1 = Number(prodArr[0].length)
-        let param2 = prodArr[0]
-        let param3 = prodArr[1]
-        let param4 = Number(mulR)
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     } else {
-        // FIX: add functionality for > 2 multipliers
-        return "test"
+        product = calcAdd(param1, param2, param3, param4)
+        //console.log("1st product: " + product)
+        // let tempProdArr = []
+        for (let i = 0; i < multCount - 2; i++) {
+            let tempProdArr = []
+            for (let j = product.length-1; j >= 0; j--) {
+                tempProdArr.push(Number(product[j]))
+            }
+            console.log("tempProdArr: ")
+            console.log(tempProdArr)
+            param2 = tempProdArr
+            console.log("param2 in loop: ")
+            console.log(param2)
+            param3 = prodArr[i+2]
+            console.log("param3 in loop: ")
+            console.log(param3)
+            product = calcAdd(param1, param2, param3, param4)
+            console.log("product in loop: " + product)
+        }
+        return product
     }
 }
 
