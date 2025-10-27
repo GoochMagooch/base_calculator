@@ -271,6 +271,9 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         for (let l = 0; l < addZero; l++) {
             tempProd = "0" + tempProd
         }
+        if (multiplier == 1) {
+            tempProd = "0" + tempProd
+        }
         addZero -= 1
         multCount += 1
 
@@ -284,9 +287,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let param2 = prodArr[0]
     let param3 = prodArr[1]
     const param4 = Number(mulR)
-
-    console.log("prodArr: ")
-    console.log(prodArr)
 
     // returns product with 1 multipler
     if (prodArr.length == 1) {
@@ -311,16 +311,9 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             for (let j = product.length-1; j >= 0; j--) {
                 tempProdArr.push(Number(product[j]))
             }
-            console.log("tempProdArr: ")
-            console.log(tempProdArr)
             param2 = tempProdArr
-            console.log("param2 in loop: ")
-            console.log(param2)
             param3 = prodArr[i+2]
-            console.log("param3 in loop: ")
-            console.log(param3)
             product = calcAdd(param1, param2, param3, param4)
-            console.log("product in loop: " + product)
         }
         return product
     }
