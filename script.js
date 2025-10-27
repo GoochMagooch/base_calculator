@@ -217,12 +217,10 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let multiplicand = 0
     let multiplier = 0
     let multCount = 0
-    let addZero = mulArr2.length-1
     const multiplierCount = mulArr2.length-1
 
     // FIX: add functionality for decimal numbers
     // FIX: add functionality to convert digit symbols > 9
-    // add leading 0 when multiplicand < multiplier
     for (let i = 0; i < iMul; i++) {
         let tempArr = []
         multiplier = mulArr2[i]
@@ -236,7 +234,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 let temp = multiplicand * multiplier
                 if (carry > 0) {
                     temp = temp + carry
-                    if (temp > mulR) {
+                    if (temp >= mulR) {
                         tempProd = String(temp % mulR) + tempProd
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
@@ -268,13 +266,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             tempProd = String(carry) + tempProd
         }
         carry = 0
-        for (let l = 0; l < addZero; l++) {
-            tempProd = "0" + tempProd
-        }
-        if (multiplier == 1) {
-            tempProd = "0" + tempProd
-        }
-        addZero -= 1
         multCount += 1
 
         for (let o = tempProd.length-1; o >= 0; o--) {
@@ -283,19 +274,29 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         prodArr.push(tempArr)
     }
 
+    let addZero = prodArr[prodArr.length-1].length
+    for (let i = 0; i < prodArr.length-1; i++) {
+        let iterate = addZero - prodArr[i].length
+        for (let j = 0; j < iterate; j++) {
+            prodArr[i].push(0)
+        }
+    }
+
     let param1 = Number(prodArr[0].length)
     let param2 = prodArr[0]
     let param3 = prodArr[1]
     const param4 = Number(mulR)
 
     // returns product with 1 multipler
-    if (prodArr.length == 1) {
+    multiplier = mulArr2[0]
+    if (prodArr.length == 1 && multiplier == 1) {
         for (let i = prodArr[0].length-1; i >= 0; i--) {
-            if (i > (prodArr[0].length - 1) - multiplierCount) {
-                continue
-            } else {
-                product = product + String(prodArr[0][i])
-            }
+            product = product + String(prodArr[0][i])
+        }
+        return product
+    } else if (prodArr.length == 1) {
+        for (let i = prodArr[0].length-1; i >= 0; i--) {
+            product = product + String(prodArr[0][i])
         }
         return product
     // return product with > 1 multipler
@@ -303,9 +304,8 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     } else {
+        //FIX: multiplcands > 3 digits won't multiply with multiplers > 2 digits
         product = calcAdd(param1, param2, param3, param4)
-        //console.log("1st product: " + product)
-        // let tempProdArr = []
         for (let i = 0; i < multCount - 2; i++) {
             let tempProdArr = []
             for (let j = product.length-1; j >= 0; j--) {
