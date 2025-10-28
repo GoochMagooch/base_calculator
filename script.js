@@ -220,8 +220,13 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     const multiplierCount = mulArr2.length-1
     let finalIterator = 0
 
+    console.log("mulArr1: ")
+    console.log(mulArr1)
+
+    console.log("mulArr2: ")
+    console.log(mulArr2)
+
     // FIX: add functionality for decimal numbers
-    // FIX: add functionality to convert digit symbols > 9
     for (let i = 0; i < iMul; i++) {
         let tempArr = []
         multiplier = mulArr2[i]
@@ -236,45 +241,45 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 if (carry > 0) {
                     temp = temp + carry
                     if (temp >= mulR) {
-                        tempProd = String(temp % mulR) + tempProd
+                        tempArr.push(temp % mulR)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(temp) + tempProd
+                        tempArr.push(temp)
                         carry = 0
                     }
                 } else {
                     if (temp >= mulR) {
-                        tempProd = String(temp % mulR) + tempProd
+                        tempArr.push(temp % mulR)
                         if ((temp/mulR) >= 1 && String(temp/mulR).includes('.')) {
                             carry = Number(String(temp/mulR).substring(0, String(temp/mulR).indexOf('.')))
                         } else if ((temp/mulR) >= 1) {
                             carry = temp/mulR
                         }
                     } else {
-                        tempProd = String(temp) + tempProd
+                        tempArr.push(temp)
                     }
                 }
             }
         }
         for (let k = 0; k < multCount; k++) {
-            tempProd = tempProd + "0"
+            tempArr.unshift(0)
         }
         if (carry > 0) {
-            tempProd = String(carry) + tempProd
+            tempArr.push(carry)
         }
         carry = 0
         multCount += 1
         finalIterator += 1
 
-        for (let o = tempProd.length-1; o >= 0; o--) {
-            tempArr.push(Number(tempProd[o]))
-        }
         prodArr.push(tempArr)
     }
+
+    console.log("prodArr: ")
+    console.log(prodArr)
 
     let addZero = prodArr[prodArr.length-1].length
     for (let i = 0; i < prodArr.length-1; i++) {
@@ -289,16 +294,28 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let param3 = prodArr[1]
     const param4 = Number(mulR)
 
+    // digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+    // letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
+
+
     // returns product with 1 multipler
     multiplier = mulArr2[0]
     if (prodArr.length == 1 && multiplier == 1) {
         for (let i = prodArr[0].length-1; i >= 0; i--) {
-            product = product + String(prodArr[0][i])
+            if (prodArr[0][i] > 9) {
+                product = product + digitLetters[String(prodArr[0][i])]
+            } else {
+                product = product + String(prodArr[0][i])
+            }
         }
         return product
     } else if (prodArr.length == 1) {
         for (let i = prodArr[0].length-1; i >= 0; i--) {
-            product = product + String(prodArr[0][i])
+            if (prodArr[0][i] > 9) {
+                product = product + digitLetters[prodArr[0][i]]
+            } else {
+                product = product + String(prodArr[0][i])
+            }
         }
         return product
     // return product with > 1 multipler
@@ -306,6 +323,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     } else {
+        // FIX: properly assign digitLetters
         product = calcAdd(param1, param2, param3, param4)
         for (let i = 0; i < finalIterator - 2; i++) {
             let tempProdArr = []
@@ -315,7 +333,11 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             param2 = tempProdArr
             param3 = prodArr[i+2]
             product = calcAdd(param1, param2, param3, param4)
+            console.log("product on iteration " + i + ": ")
+            console.log(product)
         }
+        console.log("product: ")
+        console.log(product)
         return product
     }
 }
@@ -329,14 +351,6 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 
     let sum = ""
     let remainder = false
-
-    /*
-    console.log("addArr1: ")
-    console.log(addArr1)
-
-    console.log("addArr2: ")
-    console.log(addArr2)
-    */
 
     // calculates sums and appends to 'ans'
     // assigns alpha digit symbols
