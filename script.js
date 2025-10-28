@@ -323,12 +323,16 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     } else {
-        // FIX: properly assign digitLetters
         product = calcAdd(param1, param2, param3, param4)
+        console.log("First product: " + product)
         for (let i = 0; i < finalIterator - 2; i++) {
             let tempProdArr = []
             for (let j = product.length-1; j >= 0; j--) {
-                tempProdArr.push(Number(product[j]))
+                if (String(product[j]) in letterDigits) {
+                    tempProdArr.push(Number(letterDigits[product[j]]))
+                } else {
+                    tempProdArr.push(Number(product[j]))
+                }
             }
             param2 = tempProdArr
             param3 = prodArr[i+2]
@@ -557,6 +561,7 @@ function calculateBases(n1, n2, o) {
         }
         return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
     }
+    console.log("ans: " + ans)
     return ans
 }
 
