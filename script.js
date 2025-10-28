@@ -294,10 +294,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     let param3 = prodArr[1]
     const param4 = Number(mulR)
 
-    // digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-    // letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
-
-
     // returns product with 1 multipler
     multiplier = mulArr2[0]
     if (prodArr.length == 1 && multiplier == 1) {
@@ -318,10 +314,11 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             }
         }
         return product
-    // return product with > 1 multipler
+    // returns product with 2 multiplers
     } else if (prodArr.length == 2) {
         // FIX: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
+    // return product with > 2 multipliers
     } else {
         product = calcAdd(param1, param2, param3, param4)
         console.log("First product: " + product)
@@ -562,6 +559,15 @@ function calculateBases(n1, n2, o) {
         return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
     }
     console.log("ans: " + ans)
+    let commaCount = 0
+    if (radix <= 10 && ans.length > 3) {
+        for (let i = ans.length-1; i >= 0; i--) {
+            commaCount += 1
+            if (commaCount % 3 == 0) {
+                ans = ans.substring(0, i) + "," + ans.substring(i)
+            }
+        }
+    }
     return ans
 }
 
