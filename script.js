@@ -559,14 +559,30 @@ function calculateBases(n1, n2, o) {
         return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
     }
     console.log("ans: " + ans)
-    let commaCount = 0
-    if (radix <= 10 && ans.length > 3) {
+    let comma = 0
+    let space = 0
+    if (radix == 10 && ans.length > 3) {
         for (let i = ans.length-1; i >= 0; i--) {
             commaCount += 1
             if (commaCount % 3 == 0) {
                 ans = ans.substring(0, i) + "," + ans.substring(i)
             }
         }
+    } else if (radix == 2 && ans.length > 4) {
+        for (let i = ans.length-1; i >= 0; i--) {
+            space += 1
+            if (space % 4 == 0) {
+                ans = ans.substring(0, i) + " " + ans.substring(i)
+            }
+        }
+    } else if (radix == 16 && ans.length > 2) {
+        for (let i = ans.length-1; i >= 0; i--) {
+            space += 1
+            if (space % 2 == 0) {
+                ans = ans.substring(0, i) + "_" + ans.substring(i)
+            }
+        }
+        return "0x" + ans
     }
     return ans
 }
