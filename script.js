@@ -220,13 +220,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
     const multiplierCount = mulArr2.length-1
     let finalIterator = 0
 
-    console.log("mulArr1: ")
-    console.log(mulArr1)
-
-    console.log("mulArr2: ")
-    console.log(mulArr2)
-
-    // FIX: add functionality for decimal numbers
     for (let i = 0; i < iMul; i++) {
         let tempArr = []
         multiplier = mulArr2[i]
@@ -278,9 +271,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         prodArr.push(tempArr)
     }
 
-    console.log("prodArr: ")
-    console.log(prodArr)
-
     let addZero = prodArr[prodArr.length-1].length
     for (let i = 0; i < prodArr.length-1; i++) {
         let iterate = addZero - prodArr[i].length
@@ -316,12 +306,11 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
         return product
     // returns product with 2 multiplers
     } else if (prodArr.length == 2) {
-        // FIX: shave off leading 0's
+        // TODO: shave off leading 0's
         return calcAdd(param1, param2, param3, param4)
     // return product with > 2 multipliers
     } else {
         product = calcAdd(param1, param2, param3, param4)
-        console.log("First product: " + product)
         for (let i = 0; i < finalIterator - 2; i++) {
             let tempProdArr = []
             for (let j = product.length-1; j >= 0; j--) {
@@ -334,11 +323,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             param2 = tempProdArr
             param3 = prodArr[i+2]
             product = calcAdd(param1, param2, param3, param4)
-            console.log("product on iteration " + i + ": ")
-            console.log(product)
         }
-        console.log("product: ")
-        console.log(product)
         return product
     }
 }
@@ -401,6 +386,8 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 // RETURNS DIFFERENCE OF n1 AND n2
 function calcSub(iSub, subArr1, subArr2, subR) {
     // FIX: account for minuends that are less than subtrahend
+    // FIX: numbers > base 10 don't subtract properly:
+    //      15 - A in Hex will convert to [5, 1] - [10, 0] instead of 21 - 10
     let diff = ""
 
     for (let i = 0; i < iSub; i++) {
@@ -470,6 +457,9 @@ function calculateBases(n1, n2, o) {
             n1 += "0"
         }
     }
+
+    console.log("n1: " + n1)
+    console.log("n2: " + n2)
 
     // set leading 0s to n1, n2 or neither
     let tempIterator = 0
@@ -551,20 +541,26 @@ function calculateBases(n1, n2, o) {
     } else {
         ans = calcSub(iterator, num1Arr, num2Arr, radix)
     }
- 
-    if (n1decLen > 0 || n2decLen > 0) {
-        if (n1decLen > n2decLen) {
-            return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
-        }
-        return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+
+    console.log("n1decLen: " + n1decLen)
+    console.log("n2decLen: " + n2decLen)
+    console.log("ans before comma formatting: " + ans)
+
+    let limit = 0
+    if (n1decLen > n2decLen) {
+        limit = n1decLen
+    } else if (n2decLen > n1decLen) {
+        limit = n2decLen
     }
-    console.log("ans: " + ans)
+
+    console.log("limit: " + limit)
+
     let comma = 0
     let space = 0
     if (radix == 10 && ans.length > 3) {
-        for (let i = ans.length-1; i >= 0; i--) {
-            commaCount += 1
-            if (commaCount % 3 == 0) {
+        for (let i = ans.length-(1+limit); i >= 0; i--) {
+            comma += 1
+            if (comma % 3 == 0 && i != 0) {
                 ans = ans.substring(0, i) + "," + ans.substring(i)
             }
         }
@@ -582,7 +578,16 @@ function calculateBases(n1, n2, o) {
                 ans = ans.substring(0, i) + "_" + ans.substring(i)
             }
         }
-        return "0x" + ans
+        ans = "0x" + ans
+    }
+
+    // TODO: properly format numbers with decimals and commas
+    console.log("ans after comma formatting, before decimal placement: " + ans)
+    if (n1decLen > 0 || n2decLen > 0) {
+        if (n1decLen > n2decLen) {
+            return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+        }
+        return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
     }
     return ans
 }
@@ -622,7 +627,7 @@ calculate.addEventListener("click", function() {
     let ans = calculateBases(num1, num2, op)
     calcOutput.textContent = ""
 
-    // FIX: Add checks to checkInput()
+    // TODO: Add checks to checkInput()
     if (num2 == "") {
         calcOutput.textContent = "Enter a second base number"
     } else if (calcDrop.value == "") {
