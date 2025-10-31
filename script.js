@@ -210,7 +210,8 @@ d2BaseBtn.addEventListener("click", function() {
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // RETURNS PRODUCT OF n1 AND n2
-function calcMul(iMul, mulArr1, mulArr2, mulR) {
+function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
+
     let product = ""
     let prodArr = []
     let carry = 0
@@ -294,7 +295,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 product = product + String(prodArr[0][i])
             }
         }
-        return product
     } else if (prodArr.length == 1) {
         for (let i = prodArr[0].length-1; i >= 0; i--) {
             if (prodArr[0][i] > 9) {
@@ -303,11 +303,10 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
                 product = product + String(prodArr[0][i])
             }
         }
-        return product
     // returns product with 2 multiplers
     } else if (prodArr.length == 2) {
         // TODO: shave off leading 0's
-        return calcAdd(param1, param2, param3, param4)
+        product = calcAdd(param1, param2, param3, param4)
     // return product with > 2 multipliers
     } else {
         product = calcAdd(param1, param2, param3, param4)
@@ -324,8 +323,13 @@ function calcMul(iMul, mulArr1, mulArr2, mulR) {
             param3 = prodArr[i+2]
             product = calcAdd(param1, param2, param3, param4)
         }
-        return product
     }
+    if (mulDec > 0) {
+        for (let i = 0; i < mulDec; i++) {
+            product = product.substring(0, product.length-1)
+        }
+    }
+    return product
 }
 
 function calcDiv() {
@@ -350,8 +354,8 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
                     sum = (String(sumR - addR)) + sum
                 }
             } else {
-                if (sumR - addR > 9) {
-                    sum = String(sumR) + sum
+                if (sumR > 9) {
+                    sum = digitLetters[String(sumR)] + sum
                 } else {
                     sum = String(sumR) + sum
                 }
@@ -422,6 +426,7 @@ function calculateBases(n1, n2, o) {
     let num2Arr = []
     let n1decLen = 0
     let n2decLen = 0
+    let mulDecPlaces = 0
  
     // separates whole numbers and fractionals into strings
     if (n1.includes('.') && n2.includes('.')) {
@@ -435,6 +440,17 @@ function calculateBases(n1, n2, o) {
     } else if (n2.includes('.')) {
         n2decLen = n2.substring(n2.indexOf('.')+1).length
         n2 = n2.substring(0, n2.indexOf('.')) + n2.substring(n2.indexOf('.')+1)
+    }
+
+    // properly sets decimal point for multiplication
+    mulDecPlaces = n1decLen + n2decLen
+
+    if (n1decLen > 0 || n2decLen > 0) {
+        if (n1decLen > n2decLen) {
+            multiplierDecimal = n1decLen
+        } else {
+            multiplierDecimal = n2decLen
+        }
     }
 
     // set trailing 0s to n1, n2 or neither
@@ -457,9 +473,6 @@ function calculateBases(n1, n2, o) {
             n1 += "0"
         }
     }
-
-    console.log("n1: " + n1)
-    console.log("n2: " + n2)
 
     // set leading 0s to n1, n2 or neither
     let tempIterator = 0
@@ -531,29 +544,38 @@ function calculateBases(n1, n2, o) {
         }
     }
 
+    let multplicationDecimal = 0
+    if (n1decLen > 0 || n2decLen > 0) {
+        if (n1decLen > n2decLen) {
+            multplicationDecimal = n1decLen - n2decLen
+        } else if (n2decLen > n1decLen) {
+            multplicationDecimal = n2decLen - n1decLen
+        } else {
+            multiplierDecimal = n1decLen
+        }
+    }
+
+    let limit = 0
     let ans = ""
     if (o == "*") {
-        ans = calcMul(iterator, num1Arr, num2Arr, radix)
+        ans = calcMul(iterator, num1Arr, num2Arr, radix, multplicationDecimal)
+        if (mulDecPlaces > 0) {
+            limit = mulDecPlaces
+        }
     } else if (o == "/") {
         ans = calcDiv(iterator, num1Arr, num2Arr, radix)
     } else if (o == "+") {
         ans = calcAdd(iterator, num1Arr, num2Arr, radix)
+        if (n1decLen > n2decLen) {
+            limit = n1decLen
+        } else if (n2decLen > n1decLen) {
+            limit = n2decLen
+        } else {
+            limit = n1decLen
+        }
     } else {
         ans = calcSub(iterator, num1Arr, num2Arr, radix)
     }
-
-    console.log("n1decLen: " + n1decLen)
-    console.log("n2decLen: " + n2decLen)
-    console.log("ans before comma formatting: " + ans)
-
-    let limit = 0
-    if (n1decLen > n2decLen) {
-        limit = n1decLen
-    } else if (n2decLen > n1decLen) {
-        limit = n2decLen
-    }
-
-    console.log("limit: " + limit)
 
     let comma = 0
     let space = 0
@@ -572,24 +594,34 @@ function calculateBases(n1, n2, o) {
             }
         }
     } else if (radix == 16 && ans.length > 2) {
-        for (let i = ans.length-1; i >= 0; i--) {
+        for (let i = ans.length-(1+limit); i >= 0; i--) {
             space += 1
-            if (space % 2 == 0) {
+            if (space % 2 == 0 && i != 0) {
                 ans = ans.substring(0, i) + "_" + ans.substring(i)
             }
         }
         ans = "0x" + ans
     }
 
-    // TODO: properly format numbers with decimals and commas
-    console.log("ans after comma formatting, before decimal placement: " + ans)
     if (n1decLen > 0 || n2decLen > 0) {
-        if (n1decLen > n2decLen) {
-            return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+        if (op == '*') {
+            return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
+        } else if (op == '/') {
+            // TODO: set division formatting
+            return "division formatting coming soon..."
+        } else if (op == '+') {
+            if (n1decLen > n2decLen) {
+                return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+            } else {
+                return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+            }
+        } else {
+            // TODO: set subtraction formatting
+            return "subtraction formatting coming soon..."
         }
-        return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+    } else {
+        return ans
     }
-    return ans
 }
 
 let num1 = ""
