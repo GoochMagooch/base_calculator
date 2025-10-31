@@ -442,16 +442,8 @@ function calculateBases(n1, n2, o) {
         n2 = n2.substring(0, n2.indexOf('.')) + n2.substring(n2.indexOf('.')+1)
     }
 
-    // properly sets decimal point for multiplication
+    // iterator used for setting product decimal points
     mulDecPlaces = n1decLen + n2decLen
-
-    if (n1decLen > 0 || n2decLen > 0) {
-        if (n1decLen > n2decLen) {
-            multiplierDecimal = n1decLen
-        } else {
-            multiplierDecimal = n2decLen
-        }
-    }
 
     // set trailing 0s to n1, n2 or neither
     if (n1decLen > 0 && n1decLen > 0) {
