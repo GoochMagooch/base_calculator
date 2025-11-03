@@ -594,26 +594,34 @@ function calculateBases(n1, n2, o) {
         ans = "0x" + ans
     }
 
+    console.log("n1decLen: " + n1decLen)
+    console.log("n2decLen: " + n2decLen)
     if (n1decLen > 0 || n2decLen > 0) {
         if (op == '*') {
             let test = ans.substring(ans.length-mulDecPlaces)
             if (test == '0') {
                 return ans.substring(0, (ans.length-mulDecPlaces))
             } else {
-                return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
+                return ans.substring(0, (ans.length-mulDecPlaces)) + "." + test
             }
         } else if (op == '/') {
-            // TODO: set division formatting
-            return "division formatting coming soon..."
+            return "division formatting coming soon..." // TODO:
         } else if (op == '+') {
             if (n1decLen > n2decLen) {
-                return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+                if (ans.substring(ans.length-n1decLen) == '0') {
+                    return ans.substring(0, ans.length-n1decLen)
+                } else {
+                    return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+                }
             } else {
-                return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+                if (ans.substring(ans.length-n2decLen == '0')) {
+                    return ans.substring(0, ans.length-n2decLen)
+                } else {
+                    return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+                }
             }
         } else {
-            // TODO: set subtraction formatting
-            return "subtraction formatting coming soon..."
+            return "subtraction formatting coming soon..." // TODO:
         }
     } else {
         return ans
