@@ -129,7 +129,6 @@ function baseConversion(uin, uBase, digLet) {
 	// Example: uin = 23.30
     if (uinStr.includes('.')) {
         if (uinStr.substring(uinStr.indexOf('.')+1) == "") {
-            console.log(uinStr.substring(uinStr.indexOf('.')+1))
             return "Please enter number after decimal point!"
         } else {
 		    let decNum = Number(uinStr.substring(uinStr.indexOf('.'))) * base // decNum = .30 * base
@@ -305,7 +304,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
         }
     // returns product with 2 multiplers
     } else if (prodArr.length == 2) {
-        // TODO: shave off leading 0's
         product = calcAdd(param1, param2, param3, param4)
     // return product with > 2 multipliers
     } else {
@@ -332,6 +330,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
     return product
 }
 
+// RETURNS QUOTIENT OF n1 AND n2
 function calcDiv() {
     return "test div"
 }
@@ -597,7 +596,12 @@ function calculateBases(n1, n2, o) {
 
     if (n1decLen > 0 || n2decLen > 0) {
         if (op == '*') {
-            return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
+            let test = ans.substring(ans.length-mulDecPlaces)
+            if (test == '0') {
+                return ans.substring(0, (ans.length-mulDecPlaces))
+            } else {
+                return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
+            }
         } else if (op == '/') {
             // TODO: set division formatting
             return "division formatting coming soon..."
