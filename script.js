@@ -322,17 +322,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
             product = calcAdd(param1, param2, param3, param4)
         }
     }
-
-    // shaves trailing 0s off of final product
-    if (mulDec > 0) {
-        for (let i = product.length-1; i >= 0; i++) {
-            if (product[i] == '0') {
-                product = product.substring(0, product.length-1)
-            } else {
-                break
-            }
-        }
-    }
     return product
 }
 
@@ -432,7 +421,7 @@ function calculateBases(n1, n2, o) {
     let n1decLen = 0
     let n2decLen = 0
     let mulDecPlaces = 0
- 
+
     // separates whole numbers and fractionals into strings
     if (n1.includes('.') && n2.includes('.')) {
         n1decLen = n1.substring(n1.indexOf('.')+1).length
@@ -574,16 +563,8 @@ function calculateBases(n1, n2, o) {
         ans = calcSub(iterator, num1Arr, num2Arr, radix)
     }
 
-    let comma = 0
     let space = 0
-    if (radix == 10 && ans.length > 3) {
-        for (let i = ans.length-(1+limit); i >= 0; i--) {
-            comma += 1
-            if (comma % 3 == 0 && i != 0) {
-                ans = ans.substring(0, i) + "," + ans.substring(i)
-            }
-        }
-    } else if (radix == 2 && ans.length > 4) {
+    if (radix == 2 && ans.length > 4) {
         for (let i = ans.length-1; i >= 0; i--) {
             space += 1
             if (space % 4 == 0) {
@@ -600,15 +581,38 @@ function calculateBases(n1, n2, o) {
         ans = "0x" + ans
     }
 
+    let remZero = 0
+    let comma = 0
+    let ansWholeNum = ""
     if (n1decLen > 0 || n2decLen > 0) {
         if (op == '*') {
+            ansWholeNum = ans.substring(0, ans.length-mulDecPlaces)
+            if (n1decLen > n2decLen) {
+                remZero = n1decLen-n2decLen
+            } else if (n2decLen > n1decLen) {
+                remZero = n2decLen-n1decLen
+            } else {
+                remZero = remZero
+            }
+            for (let i = 0; i < remZero; i++) {
+                ans = ans.substring(0, ans.length-1)
+            }
+            ansWholeNum = ans.substring(0, ans.length-mulDecPlaces)
+            if (radix == 10 && ansWholeNum.length > 3) {
+                for (let i = ans.length-(1+limit); i >= 0; i--) {
+                    comma += 1
+                    if (comma % 3 == 0 && i != 0) {
+                        ans = ans.substring(0, i) + "," + ans.substring(i)
+                    }
+                }
+            }
             if (ans.substring(ans.length-mulDecPlaces) == '0') {
                 return ans.substring(0, (ans.length-mulDecPlaces))
             } else {
                 return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
             }
         } else if (op == '/') {
-            return "division formatting coming soon..." // TODO:
+            return "division formatting coming soon..."
         } else if (op == '+') {
             if (n1decLen > n2decLen) {
                 if (ans.substring(ans.length-n1decLen) == '0') {
@@ -617,14 +621,14 @@ function calculateBases(n1, n2, o) {
                     return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
                 }
             } else {
-                if (ans.substring(ans.length-n2decLen == '0')) {
+                if (ans.substring(ans.length-n2decLen) == '0') {
                     return ans.substring(0, ans.length-n2decLen)
                 } else {
                     return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
                 }
             }
         } else {
-            return "subtraction formatting coming soon..." // TODO:
+            return "subtraction formatting coming soon..."
         }
     } else {
         return ans
