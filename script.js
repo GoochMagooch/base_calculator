@@ -322,9 +322,15 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
             product = calcAdd(param1, param2, param3, param4)
         }
     }
+
+    // shaves trailing 0s off of final product
     if (mulDec > 0) {
-        for (let i = 0; i < mulDec; i++) {
-            product = product.substring(0, product.length-1)
+        for (let i = product.length-1; i >= 0; i++) {
+            if (product[i] == '0') {
+                product = product.substring(0, product.length-1)
+            } else {
+                break
+            }
         }
     }
     return product
@@ -535,21 +541,21 @@ function calculateBases(n1, n2, o) {
         }
     }
 
-    let multplicationDecimal = 0
+    let mulDecimal = 0
     if (n1decLen > 0 || n2decLen > 0) {
         if (n1decLen > n2decLen) {
-            multplicationDecimal = n1decLen - n2decLen
+            mulDecimal = n1decLen - n2decLen
         } else if (n2decLen > n1decLen) {
-            multplicationDecimal = n2decLen - n1decLen
+            mulDecimal = n2decLen - n1decLen
         } else {
-            multiplierDecimal = n1decLen
+            mulDecimal = n1decLen
         }
     }
 
     let limit = 0
     let ans = ""
     if (o == "*") {
-        ans = calcMul(iterator, num1Arr, num2Arr, radix, multplicationDecimal)
+        ans = calcMul(iterator, num1Arr, num2Arr, radix, mulDecimal)
         if (mulDecPlaces > 0) {
             limit = mulDecPlaces
         }
@@ -594,15 +600,12 @@ function calculateBases(n1, n2, o) {
         ans = "0x" + ans
     }
 
-    console.log("n1decLen: " + n1decLen)
-    console.log("n2decLen: " + n2decLen)
     if (n1decLen > 0 || n2decLen > 0) {
         if (op == '*') {
-            let test = ans.substring(ans.length-mulDecPlaces)
-            if (test == '0') {
+            if (ans.substring(ans.length-mulDecPlaces) == '0') {
                 return ans.substring(0, (ans.length-mulDecPlaces))
             } else {
-                return ans.substring(0, (ans.length-mulDecPlaces)) + "." + test
+                return ans.substring(0, (ans.length-mulDecPlaces)) + "." + ans.substring(ans.length-mulDecPlaces)
             }
         } else if (op == '/') {
             return "division formatting coming soon..." // TODO:
