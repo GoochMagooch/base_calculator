@@ -127,6 +127,7 @@ function baseConversion(uin, uBase, digLet) {
     returned.push(baseStr)
 
 	// Example: uin = 23.30
+    // TODO: .62037 (base 10) converts to .341555 (base 6), should be 342
     if (uinStr.includes('.')) {
         if (uinStr.substring(uinStr.indexOf('.')+1) == "") {
             return "Please enter number after decimal point!"
@@ -271,6 +272,7 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
         prodArr.push(tempArr)
     }
 
+    // FIX: add condition if multiplier or multiplicand are 0
     let addZero = prodArr[prodArr.length-1].length
     for (let i = 0; i < prodArr.length-1; i++) {
         let iterate = addZero - prodArr[i].length
@@ -384,16 +386,29 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 // RETURNS DIFFERENCE OF n1 AND n2
 function calcSub(iSub, subArr1, subArr2, subR) {
     // FIX: account for minuends that are less than subtrahend
-    // FIX: numbers > base 10 don't subtract properly:
-    //      15 - A in Hex will convert to [5, 1] - [10, 0] instead of 21 - 10
     let diff = ""
 
+    // Test:
+    //  AB
+    //- 20
+
+    // iSub = 3
+    // subR = 10
+    // subArr1 = [11, 10]
+    // subArr2 = [ 0,  2]
+
+    // digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
+    // letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
+
+
     for (let i = 0; i < iSub; i++) {
-        let minuend = subArr1[i]
-        let subtrahend = subArr2[i]
+        let minuend = subArr1[i]    // 0=0, 1=5, 2=2
+        let subtrahend = subArr2[i] // 0=1, 1=4, 2=2
+        let tempDiff = ""
+        console.log("tempDiff: " + tempDiff)
 
         if (minuend < subtrahend) {
-            let traverse = (i+1)
+            let traverse = (i+1) // 0=1
             let borrow = false
             while (borrow == false) {
                 if (subArr1[traverse] > subArr2[traverse]) {
@@ -404,11 +419,23 @@ function calcSub(iSub, subArr1, subArr2, subR) {
                     traverse += 1
                 }
             }
-            diff = ((minuend + subR) - subtrahend) + diff
+            tempDiff = (minuend + subR) - subtrahend
+            if (tempDiff in digitLetters) {
+                diff = digitLetters[tempDiff] + diff
+            } else {
+                diff = tempDiff + diff
+            }
         } else {
-            diff = (minuend - subtrahend) + diff
+            tempDiff = (minuend - subtrahend)
+            if (tempDiff in digitLetters) {
+                diff = digitLetters[tempDiff] + tempDiff
+            } else {
+                diff = tempDiff + diff
+            }
         }
     }
+    // FIX: diff returns: "0x8B_11"
+    // Properly assigning letter digit symbol, but retaining '11'
     return diff
 }
 
@@ -631,6 +658,14 @@ function calculateBases(n1, n2, o) {
             return "subtraction formatting coming soon..."
         }
     } else {
+        if (radix == 10 && ans.length > 3) {
+            for (let i = ans.length-(1+limit); i >= 0; i--) {
+                comma += 1
+                if (comma % 3 == 0 && i != 0) {
+                    ans = ans.substring(0, i) + "," + ans.substring(i)
+                }
+            }
+        }
         return ans
     }
 }
@@ -671,6 +706,7 @@ calculate.addEventListener("click", function() {
     calcOutput.textContent = ""
 
     // TODO: Add checks to checkInput()
+    //       Spaces don't trigger error message
     if (num2 == "") {
         calcOutput.textContent = "Enter a second base number"
     } else if (calcDrop.value == "") {
@@ -738,6 +774,9 @@ function baseToDecimal(b2DecIn, b) {
         input = b2DecIn
     }
 
+    if (String(fractional).length > 6) {
+        fractional = String(fractional).substring(0, 8)
+    }
     if (fractional > 0 && input.length == 0) {
         return Number(0 + fractional)
     }
@@ -767,6 +806,7 @@ function baseToDecimal(b2DecIn, b) {
 }
 
 // OUTPUT CONVERTED BASE NUMBER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// TODO: outputs only number instead of "num in radix: num"
 b2DecBtn.addEventListener("click", function() {
     let input = b2DecInput.value
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
@@ -774,7 +814,15 @@ b2DecBtn.addEventListener("click", function() {
     if (checkInput(input, base, "b2Decimal") == 0) {
         baseToDecimal(input, base)
         if (typeof(baseToDecimal(input, base)) === "number") {
-            b2DecOutput.textContent = baseToDecimal(input, base)
+            if (base == 2) {
+                b2DecOutput.textContent = "Binary " + input + " in Decimal - " + baseToDecimal(input, base)
+            } else if (base == 8) {
+                b2DecOutput.textContent = "Octal " + input + " in Decimal - " + baseToDecimal(input, base)
+            } else if (base == 16) {
+                b2DecOutput.textContent = "Hexadecimal " + input + " in Decimal - " + baseToDecimal(input, base)
+            } else {
+                b2DecOutput.textContent = "Base " + base + " " + input + " in Decimal - " + baseToDecimal(input, base)
+            }
         } else {
             b2DecOutput.textContent = baseToDecimal(input, base)
             input.value = ""
