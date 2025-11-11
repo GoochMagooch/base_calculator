@@ -80,6 +80,7 @@ function baseConversion(uin, uBase, digLet) {
     let dNLength = 0
 
     // convert quotient to chosen base from base 2 - base 10
+    // TODO: should be 'base >= 2'?
 	if (base >= 1 && base <= 10) {
 		while (quotient > base-1) {
 			if (quotient == base) {
@@ -170,22 +171,17 @@ function baseConversion(uin, uBase, digLet) {
            return uinStr + " in binary: " + ans + "." + decStr
 	    } else if (base == 10) {
 		    let decNumLength = uinStr.substring(uinStr.indexOf('.')).length-1
-           return uinStr + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
+            return uinStr + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
 		} else {
-           return uinStr + " in base " + base + ": " + ans + "." + decStr
+            return uinStr + " in base " + base + ": " + ans + "." + decStr
         }
 	} else {
         // reverse baseStr for output (no decimal point)
 	    for (let i = baseStr.length-1; i >= 0; i--) {
 	        ans += baseStr[i]
 	    }
-	    if (base == "base-2") {
-		    return uinStr + " in binary: " + ans
-		} else {
-	        return uinStr + " in base " + base + ": " + ans
-        }
+        return ans
     }
-
 }
 
 // CHECK USER INPUT - OUTPUT ACCORDINGLY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -384,59 +380,94 @@ function calcAdd(iAdd, addArr1, addArr2, addR) {
 }
 
 // RETURNS DIFFERENCE OF n1 AND n2
-function calcSub(iSub, subArr1, subArr2, subR) {
-    // FIX: account for minuends that are less than subtrahend
-    let diff = ""
+function calcSub(subN1, subN2, subR) {
+    let fixedWidth = 0
 
-    // Test:
-    //  AB
-    //- 20
-
-    // iSub = 3
-    // subR = 10
-    // subArr1 = [11, 10]
-    // subArr2 = [ 0,  2]
-
-    // digitLetters = {"10": "A", "11": "B", "12": "C", "13": "D", "14": "E", "15": "F"}
-    // letterDigits = {"A": "10", "B": "11", "C": "12", "D": "13", "E": "14", "F": "15"}
-
-
-    for (let i = 0; i < iSub; i++) {
-        let minuend = subArr1[i]    // 0=0, 1=5, 2=2
-        let subtrahend = subArr2[i] // 0=1, 1=4, 2=2
-        let tempDiff = ""
-        console.log("tempDiff: " + tempDiff)
-
-        if (minuend < subtrahend) {
-            let traverse = (i+1) // 0=1
-            let borrow = false
-            while (borrow == false) {
-                if (subArr1[traverse] > subArr2[traverse]) {
-                    subArr1[traverse] -= 1
-                    borrow = true
-                } else {
-                    subArr1[traverse] = (subArr1[traverse] + subR - 1) + diff
-                    traverse += 1
-                }
-            }
-            tempDiff = (minuend + subR) - subtrahend
-            if (tempDiff in digitLetters) {
-                diff = digitLetters[tempDiff] + diff
-            } else {
-                diff = tempDiff + diff
-            }
-        } else {
-            tempDiff = (minuend - subtrahend)
-            if (tempDiff in digitLetters) {
-                diff = digitLetters[tempDiff] + tempDiff
-            } else {
-                diff = tempDiff + diff
-            }
+    if (subN1.length > subN2.length) {
+        fixedWidth = subN1.length
+        for (let i = subN2.length; i < subN1.length; i++) {
+            subN2 = "0" + subN2
+        }
+    } else {
+        fixedWidth = subN2.length
+        for (let i = subN1.length; i < subN2.length; i++) {
+            subN1 = "0" + subN1
         }
     }
-    // FIX: diff returns: "0x8B_11"
-    // Properly assigning letter digit symbol, but retaining '11'
-    return diff
+    let complement = ""
+    for (let i = 0; i < subN2.length; i++) {
+        if (subN2[i] == "0") {
+            complement += "1"
+        } else {
+            complement += "0"
+        }
+    }
+
+    let subSumArr1 = []
+    for (let i = 0; i < subN1.length; i++) {
+        subSumArr1.unshift(Number(subN1[i]))
+    }
+    let subSumArr2 = []
+    for (let i = 0; i < complement.length; i++) {
+        subSumArr2.unshift(Number(complement[i]))
+    }
+
+    // Array to add to 1s complement to calculate 2s complement
+    let compAddArr = []
+    for (let i = 0; i < complement.length; i++) {
+        if (i == 0) {
+            compAddArr.push(Number(1))
+        } else {
+            compAddArr.push(Number(0))
+        }
+    }
+
+    complement = calcAdd(fixedWidth, subSumArr2, compAddArr, 2)
+
+    compAddArr = []
+    for (let i = 0; i < complement.length; i++) {
+        compAddArr.unshift(Number(complement[i]))
+    }
+
+    let finalSum = calcAdd(fixedWidth, subSumArr1, compAddArr, 2)
+
+    if (finalSum.length > fixedWidth) {
+        finalSum = finalSum.substring(1)
+        if (subR == 2) {
+            return String(finalSum)
+        } else {
+            finalSum = String(baseToDecimal(finalSum, 2))
+            return String(baseConversion(finalSum, subR, digitLetters))
+        }
+    } else {
+        let finalSumNeg = ""
+        for (let i = 0; i < finalSum.length; i++) {
+            if (finalSum[i] == "0") {
+                finalSumNeg = finalSumNeg + "1"
+            } else {
+                finalSumNeg = finalSumNeg + "0"
+            }
+        }
+        let negDiffArr = []
+        for (let i = 0; i < finalSumNeg.length; i++) {
+            negDiffArr.unshift(Number(finalSumNeg[i]))
+        }
+        compAddArr = []
+        for (let i = 0; i < complement.length; i++) {
+            if (i == 0) {
+                compAddArr.push(Number(1))
+            } else {
+                compAddArr.push(Number(0))
+            }
+        }
+        finalSumNeg = calcAdd(fixedWidth, negDiffArr, compAddArr, 2)
+        if (subR == 2) {
+            return "-" + finalSumNeg
+        } else {
+            finalSumNeg = String(baseToDecimal(finalSumNeg, 2))
+            return "-" + String(baseConversion(finalSumNeg, subR, digitLetters))
+        }
+    }
 }
 
 // CONVERTS INPUTS TO NECESSARY STRINGS AND RETURNS FORMATTED CALCULATIONS ~~~~~~~~~~
@@ -448,7 +479,7 @@ function calculateBases(n1, n2, o) {
     let n1decLen = 0
     let n2decLen = 0
     let mulDecPlaces = 0
-
+ 
     // separates whole numbers and fractionals into strings
     if (n1.includes('.') && n2.includes('.')) {
         n1decLen = n1.substring(n1.indexOf('.')+1).length
@@ -587,7 +618,13 @@ function calculateBases(n1, n2, o) {
             limit = n1decLen
         }
     } else {
-        ans = calcSub(iterator, num1Arr, num2Arr, radix)
+        let subN1Dec = baseToDecimal(n1, radix)
+        let subN2Dec = baseToDecimal(n2, radix)
+
+        let subN1Bin = baseConversion(subN1Dec, 2, digitLetters)
+        let subN2Bin = baseConversion(subN2Dec, 2, digitLetters)
+
+        ans = calcSub(subN1Bin, subN2Bin, radix)
     }
 
     let space = 0
@@ -655,7 +692,19 @@ function calculateBases(n1, n2, o) {
                 }
             }
         } else {
-            return "subtraction formatting coming soon..."
+            if (n1decLen > n2decLen) {
+                if (ans.substring(ans.length-n1decLen) == '0') {
+                    return ans.substring(0, ans.length-n1decLen)
+                } else {
+                    return ans.substring(0, ans.length-n1decLen) + "." + ans.substring(ans.length-n1decLen)
+                }
+            } else {
+                if (ans.substring(ans.length-n2decLen) == '0') {
+                    return ans.substring(0, ans.length-n2decLen)
+                } else {
+                    return ans.substring(0, ans.length-n2decLen) + "." + ans.substring(ans.length-n2decLen)
+                }
+            }
         }
     } else {
         if (radix == 10 && ans.length > 3) {
@@ -774,11 +823,11 @@ function baseToDecimal(b2DecIn, b) {
         input = b2DecIn
     }
 
-    if (String(fractional).length > 6) {
-        fractional = String(fractional).substring(0, 8)
-    }
+    // Shaves off trailing digits after 6 fractional digits
+    fractional = String(fractional).substring(0, 8)
+
     if (fractional > 0 && input.length == 0) {
-        return Number(0 + fractional)
+        return Number(fractional)
     }
     for (let i = input.length-1; i >= 0; i--) {
         if (String(input[i]).toUpperCase() in letterDigits) {
@@ -806,7 +855,6 @@ function baseToDecimal(b2DecIn, b) {
 }
 
 // OUTPUT CONVERTED BASE NUMBER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// TODO: outputs only number instead of "num in radix: num"
 b2DecBtn.addEventListener("click", function() {
     let input = b2DecInput.value
     let base = Number(String(b2DecDropdown.value).substring(String(b2DecDropdown.value).indexOf('-')+1))
