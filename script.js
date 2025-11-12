@@ -80,8 +80,7 @@ function baseConversion(uin, uBase, digLet) {
     let dNLength = 0
 
     // convert quotient to chosen base from base 2 - base 10
-    // TODO: should be 'base >= 2'?
-	if (base >= 1 && base <= 10) {
+	if (base >= 2 && base <= 10) {
 		while (quotient > base-1) {
 			if (quotient == base) {
 				baseStr += 0
@@ -128,7 +127,6 @@ function baseConversion(uin, uBase, digLet) {
     returned.push(baseStr)
 
 	// Example: uin = 23.30
-    // TODO: .62037 (base 10) converts to .341555 (base 6), should be 342
     if (uinStr.includes('.')) {
         if (uinStr.substring(uinStr.indexOf('.')+1) == "") {
             return "Please enter number after decimal point!"
@@ -168,7 +166,7 @@ function baseConversion(uin, uBase, digLet) {
 		    ans += baseStr[i]
 		}
 	    if (d2BaseDropdown.value == "base-2") {
-           return uinStr + " in binary: " + ans + "." + decStr
+            return uinStr + " in binary: " + ans + "." + decStr
 	    } else if (base == 10) {
 		    let decNumLength = uinStr.substring(uinStr.indexOf('.')).length-1
             return uinStr + " in base 10: " + ans + "." + decStr.substring(0, decNumLength)
@@ -268,7 +266,6 @@ function calcMul(iMul, mulArr1, mulArr2, mulR, mulDec) {
         prodArr.push(tempArr)
     }
 
-    // FIX: add condition if multiplier or multiplicand are 0
     let addZero = prodArr[prodArr.length-1].length
     for (let i = 0; i < prodArr.length-1; i++) {
         let iterate = addZero - prodArr[i].length
@@ -602,6 +599,10 @@ function calculateBases(n1, n2, o) {
     let limit = 0
     let ans = ""
     if (o == "*") {
+        // returns '0' if multiplicand or multiplier == 0
+        if (n1 == 0 || n2 == 0) {
+            return 0
+        }
         ans = calcMul(iterator, num1Arr, num2Arr, radix, mulDecimal)
         if (mulDecPlaces > 0) {
             limit = mulDecPlaces
@@ -754,8 +755,6 @@ calculate.addEventListener("click", function() {
     let ans = calculateBases(num1, num2, op)
     calcOutput.textContent = ""
 
-    // TODO: Add checks to checkInput()
-    //       Spaces don't trigger error message
     if (num2 == "") {
         calcOutput.textContent = "Enter a second base number"
     } else if (calcDrop.value == "") {
@@ -763,6 +762,10 @@ calculate.addEventListener("click", function() {
         num2 = ""
         calcInput.value = ""
         calcOutput.textContent = "Please choose a base!"
+    } else if (num1.includes(" ")) {
+        calcOutput.textContent = "Please remove spaces from first number"
+    } else if (num2.includes(" ")) {
+        calcOutput.textContent = "Please remove spaces from second number"
     } else {
         if (typeof(ans) === "number" && ans >= radix) {
             calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
