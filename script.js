@@ -724,6 +724,12 @@ let num1 = ""
 let op = ""
 let num2 = ""
 
+function clearData() {
+    num1 = ""
+    num2 = ""
+    calcInput.value = ""
+}
+
 mul.addEventListener("click", function() {
     op = "*"
     num1 = calcInput.value
@@ -755,26 +761,34 @@ calculate.addEventListener("click", function() {
     let ans = calculateBases(num1, num2, op)
     calcOutput.textContent = ""
 
-    if (num2 == "") {
-        calcOutput.textContent = "Enter a second base number"
+    if (num1 == "") {
+        calcOutput.textContent = "No calculation - First number empty!"
+        clearData()
+    } else if (num2 == "") {
+        calcOutput.textContent = "No calculation - Second number empty!"
+        clearData()
     } else if (calcDrop.value == "") {
-        num1 = ""
-        num2 = ""
-        calcInput.value = ""
         calcOutput.textContent = "Please choose a base!"
+        clearData()
     } else if (num1.includes(" ")) {
         calcOutput.textContent = "Please remove spaces from first number"
+        clearData()
     } else if (num2.includes(" ")) {
         calcOutput.textContent = "Please remove spaces from second number"
+        clearData()
     } else {
         if (typeof(ans) === "number" && ans >= radix) {
             calcOutput.textContent = "Digit symbol '" + ans + "' is invalid in Base " + radix
-            calcOutput.value = ""
-            num1 = ""
-            num2 = ""
+            clearData()
         } else if (typeof(ans) === "object") {
             calcOutput.textContent = "Digit symbol '" + ans[0] + "' is invalid in Base " + radix
-            calcOutput.value = ""
+            clearData()
+        } else if (num1.match(/[^0-9a-zA-Z\.$]/g)) {
+            calcOutput.textContent = "Invalid character/s: " + num1.match(/[^0-9a-zA-Z\.$]/g)
+            clearData()
+        } else if (num2.match(/[^0-9a-zA-Z\.$]/g)) {
+            calcOutput.textContent = "Invalid character/s: " + num2.match(/[^0-9a-zA-Z\.$]/g)
+            clearData()
         } else {
             calcOutput.textContent = calculateBases(num1, num2, op)
             calcInput.value = ""
